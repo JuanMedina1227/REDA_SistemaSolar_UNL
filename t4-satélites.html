@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Módulo Satélites Naturales | RED Sistema Solar</title>
+<meta name="DC.title" content="Satélites Naturales: Explorando los mundos que orbitan planetas">
+<meta name="DC.creator" content="Jampyer Alexander Malla Mendoza">
+<meta name="DC.subject" content="Sistema Solar; Satélites Naturales; Ciencias Naturales">
+<meta name="DC.type" content="InteractiveResource">
+<meta name="DC.language" content="es-EC">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;800&family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060b18; --bg2:#0a1020; --bg3:#0d1530;
+  --gold:#F5C842; --gold2:#d4a500; --goldf:rgba(245,200,66,0.08);
+  --blue:#4DA6FF; --blue2:#1a5fa8; --bluef:rgba(77,166,255,0.08);
+  --teal:#1DB87A; --tealf:rgba(29,184,122,0.08);
+  --coral:#E24B4A;
+  --white:#EFF3FF; --muted:#7a8fb5; --dim:#3a4a6b;
+  --card:rgba(10,16,32,0.85);
+  --border:rgba(77,166,255,0.15);
+  --fhead:Orbitron,sans-serif;
+  --fbody:"Exo 2",sans-serif;
+  --r:10px; --r2:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:var(--fbody);color:var(--white);display:flex;flex-direction:column}
+
+/* ── STARS CANVAS ── */
+#star-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* ── LAYOUT ── */
+#deck{position:relative;flex:1;overflow:hidden;z-index:1}
+.slide{
+  position:absolute;inset:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s ease,transform .45s ease;
+  transform:translateX(60px);
+  display:flex;flex-direction:column;
+}
+.slide.active{opacity:1;pointer-events:auto;transform:translateX(0)}
+.slide.exit-l{opacity:0;transform:translateX(-60px)}
+.slide.enter-r{opacity:0;transform:translateX(60px)}
+.slide.enter-l{opacity:0;transform:translateX(-60px)}
+
+/* ── NAVIGATION BAR ── */
+#nav{
+  flex-shrink:0;height:54px;background:rgba(6,11,24,0.95);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;z-index:10;backdrop-filter:blur(8px);
+}
+.nav-btn{
+  background:transparent;border:1px solid var(--border);color:var(--muted);
+  font-family:var(--fhead);font-size:.65rem;letter-spacing:1.5px;
+  padding:7px 18px;border-radius:var(--r2);cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;gap:6px; text-decoration:none;
+}
+.nav-btn:hover:not(:disabled){color:var(--white);border-color:var(--blue);background:var(--bluef)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:5px}
+.nav-progress{width:220px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.nav-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--blue));border-radius:2px;transition:width .4s ease}
+.nav-info{display:flex;align-items:center;gap:10px;font-size:.75rem;color:var(--muted)}
+.nav-chapter{font-family:var(--fhead);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.nav-count{font-family:var(--fhead);font-size:.7rem;color:var(--muted)}
+
+/* ── SLIDE HEADER STRIP ── */
+.slide-strip{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 32px;border-bottom:1px solid var(--border);
+  background:rgba(6,11,24,0.6);backdrop-filter:blur(4px);flex-shrink:0;
+}
+.strip-label{font-family:var(--fhead);font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
+.strip-dcd{font-size:.7rem;color:var(--muted)}
+
+/* ── SLIDE BODY ── */
+.slide-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:32px 42px;display:flex;flex-direction:column;gap:18px}
+.slide-body::-webkit-scrollbar{width:4px}
+.slide-body::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+
+/* ── PREMIUM COVER ── */
+.premium-cover { position: absolute; inset: 0; background-color: #020617; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; font-family: var(--fbody); }
+.premium-bg-gradient { position: absolute; inset: 0; background: radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(251, 191, 36, 0.1) 0%, transparent 40%); z-index: 0; }
+.premium-nebula { position:absolute;top:-30%;right:-10%; width:60%;height:130%; background:radial-gradient(ellipse at 60% 50%,rgba(77,166,255,.12) 0%,rgba(245,200,66,.06) 40%,transparent 70%); pointer-events:none;z-index:1; animation:nebula-drift 8s ease-in-out infinite alternate; }
+@keyframes nebula-drift{from{transform:scale(1) rotate(-2deg)}to{transform:scale(1.08) rotate(2deg)}}
+.premium-content { z-index: 10; text-align: center; max-width: 1000px; padding: 0 20px; }
+.premium-pre { font-family: 'Plus Jakarta Sans', sans-serif; text-transform: uppercase; letter-spacing: 6px; color: #38bdf8; font-size: 0.75rem; margin-bottom: 20px; }
+.premium-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(2.5rem, 5vw, 4.5rem); font-weight: 800; line-height: 1.05; margin-bottom: 20px; background: linear-gradient(to bottom, #ffffff 30%, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.premium-sub { font-size: 1rem; font-weight: 300; color: #94a3b8; margin-bottom: 50px; }
+.premium-cta { background: #ffffff; color: #020617; padding: 15px 35px; border-radius: 50px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 0.9rem; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.premium-cta:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+.premium-meta { position: absolute; bottom: 40px; display: flex; gap: 40px; z-index: 10; flex-wrap: wrap; justify-content: center; }
+.pm-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.pm-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: #64748b; }
+.pm-val { font-size: 0.85rem; color: #f1f5f9; font-weight: 600; }
+
+/* ── COMPONENTS ── */
+.sec-title{font-family:var(--fhead);font-size:1rem;font-weight:700;color:var(--gold); letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.info-card{background:rgba(10,16,32,.82);border:1px solid var(--border);border-radius:var(--r); padding:20px;backdrop-filter:blur(6px)}
+.info-card h3{font-family:var(--fhead);font-size:.75rem;letter-spacing:1.5px;color:var(--blue); text-transform:uppercase;margin-bottom:10px}
+ul.sp{list-style:none;padding:0}
+ul.sp li{padding:5px 0 5px 18px;position:relative;font-size:.88rem; border-bottom:1px solid rgba(255,255,255,.04);line-height:1.7}
+ul.sp li::before{content:"▸";position:absolute;left:0;color:var(--gold)}
+ul.sp li:last-child{border-bottom:none}
+.highlight{color:var(--gold);font-weight:700}
+
+/* ── PLANET SLIDES (Cinematic) ── */
+.planet-slide{display:flex!important;flex-direction:row!important;padding:0!important;height:100%}
+.planet-img-panel{width:52%;flex-shrink:0;position:relative;overflow:hidden;}
+.planet-img-panel img{width:100%;height:100%;object-fit:cover;object-position:center;display:block;transition:transform .8s ease;transform:scale(1.06);}
+.slide.active .planet-img-panel img{transform:scale(1)}
+.planet-img-panel .p-gradient{position:absolute;inset:0;pointer-events:none;}
+.planet-name-over{position:absolute;bottom:24px;left:24px;font-family:var(--fhead);font-size:2.2rem;font-weight:900;text-shadow:0 0 40px rgba(0,0,0,1),0 2px 8px rgba(0,0,0,.9);line-height:1;}
+.planet-type-over{position:absolute;top:18px;left:18px;font-family:var(--fhead);font-size:.62rem;letter-spacing:2px;padding:5px 14px;border-radius:16px;text-transform:uppercase;}
+.badge-gas{background:rgba(77,166,255,.2);border:1px solid var(--blue);color:var(--blue)}
+.badge-ice{background:rgba(29,184,122,.15);border:1px solid var(--teal);color:var(--teal)}
+.planet-data-panel{flex:1;overflow-y:auto;display:flex;flex-direction:column;justify-content:flex-start;padding:40px 38px 26px;background:var(--bg2);transform-style:preserve-3d;transition:transform .12s ease-out;}
+.planet-data-panel::-webkit-scrollbar{width:3px}
+.planet-data-panel::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+.pd-label{font-family:var(--fhead);font-size:.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.pd-title{font-family:var(--fhead);font-size:1.6rem;font-weight:900;margin-bottom:6px}
+.pd-table{width:100%;border-collapse:collapse;font-size:.84rem;margin:12px 0}
+.pd-table td{padding:7px 12px;border-bottom:1px solid rgba(255,255,255,.05)}
+.pd-table td:first-child{color:var(--muted);width:42%;font-weight:600}
+.pd-table tr:last-child td{border-bottom:none}
+
+/* ── GATEKEEPERS ── */
+.checkpoint-panel{margin-top:8px;padding:14px 14px 12px;border:1px solid rgba(245,200,66,.22);border-left:4px solid var(--gold);border-radius:0 var(--r) var(--r) 0;background:linear-gradient(135deg,rgba(245,200,66,.08),rgba(77,166,255,.05));box-shadow:0 10px 26px rgba(0,0,0,.18);}
+.checkpoint-panel.completed{border-color:rgba(29,184,122,.25);border-left-color:var(--teal);background:linear-gradient(135deg,rgba(29,184,122,.08),rgba(77,166,255,.04));}
+.checkpoint-head{display:flex;flex-direction:column;gap:6px;margin-bottom:10px;}
+.checkpoint-tag{display:inline-flex;align-self:flex-start;font-family:var(--fhead);font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);}
+.checkpoint-title{font-family:var(--fhead);font-size:.9rem;letter-spacing:1px;color:var(--white);line-height:1.35;}
+.checkpoint-options{display:grid;grid-template-columns:1fr;gap:8px;margin:10px 0 12px;}
+.checkpoint-option{width:100%;text-align:left;border:1px solid var(--border);background:rgba(255,255,255,.03);color:var(--white);border-radius:var(--r2);padding:10px 12px;cursor:pointer;transition:all .18s ease;font-family:var(--fbody);font-size:.84rem;line-height:1.45;}
+.checkpoint-option:hover:not(:disabled){border-color:rgba(245,200,66,.45);background:rgba(245,200,66,.08);}
+.checkpoint-option.selected{border-color:var(--gold);background:rgba(245,200,66,.12);color:var(--gold);}
+.checkpoint-option.correct{border-color:var(--teal);background:rgba(29,184,122,.14);color:var(--teal);}
+.checkpoint-option.wrong{border-color:var(--coral);background:rgba(226,75,74,.12);color:var(--coral);}
+.checkpoint-option:disabled{cursor:default;opacity:.8;}
+.checkpoint-feedback{min-height:1.9em;font-size:.8rem;line-height:1.5;color:var(--muted);margin-bottom:10px;}
+.checkpoint-cta{width:100%;background:var(--gold);color:var(--bg);border:none;border-radius:var(--r2);font-family:var(--fhead);font-size:.7rem;letter-spacing:1.8px;text-transform:uppercase;padding:10px 14px;cursor:pointer;transition:opacity .2s,transform .2s;}
+.checkpoint-cta:hover:not(:disabled){opacity:.92;transform:translateY(-1px)}
+.checkpoint-cta:disabled{opacity:.38;cursor:default;transform:none}
+.checkpoint-panel.completed .checkpoint-cta { background: var(--teal); color: #fff; }
+
+/* ── JAMPYER CUSTOM - TIDE SLIDER ── */
+.tide-box { background:rgba(0,0,0,0.3); border:1px solid var(--border); border-radius:var(--r); padding:15px; margin-top:10px; display:flex; flex-direction:column; align-items:center; }
+.tide-slider { width:100%; margin:10px 0; cursor:pointer; accent-color:var(--blue); }
+#tide-container { display:flex; align-items:center; justify-content:center; height:120px; width:100%; position:relative; overflow:hidden; }
+#earth-wrapper { position:relative; width:80px; height:80px; z-index:2; }
+#earth-img { width:100%; height:100%; border-radius:50%; object-fit:cover; }
+#water-bulge { position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0, 132, 255, 0.4); border-radius:50%; pointer-events:none; transition:transform 0.1s; box-shadow:0 0 15px rgba(0, 132, 255, 0.6); }
+#moon-game { width:35px; position:absolute; right:10px; z-index:10; transition:transform 0.1s; border-radius:50%; }
+
+/* ── ACTIVITIES ── */
+.act-layout{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.bank-chips{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;min-height:52px}
+.pchip{border:2px solid var(--border);background:var(--card);color:var(--white);font-family:var(--fhead);font-size:.68rem;letter-spacing:1px;padding:9px 18px;border-radius:var(--r2);cursor:pointer;transition:all .2s;user-select:none;}
+.pchip:hover:not(.placed-chip){border-color:var(--blue);background:var(--bluef);color:var(--blue)}
+.pchip.sel-chip{border-color:var(--gold);background:var(--goldf);color:var(--gold)}
+.pchip.placed-chip{opacity:.55;cursor:default}
+.drop-zone{background:rgba(255,255,255,.02);border:2px dashed var(--border);border-radius:var(--r);padding:20px;min-height:100px;cursor:pointer;transition:all .2s;}
+.drop-zone:hover{border-color:var(--gold);background:var(--goldf)}
+.dz-title{font-family:var(--fhead);font-size:.72rem;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px}
+.dz-chips{display:flex;flex-wrap:wrap;gap:8px;min-height:36px}
+.dz-chip{padding:5px 12px;border-radius:var(--r2);font-size:.78rem;font-weight:700}
+.dz-ok{background:rgba(29,184,122,.18);color:var(--teal);border:1px solid var(--teal)}
+.dz-fail{background:rgba(226,75,74,.15);color:var(--coral);border:1px solid var(--coral)}
+.act-result{padding:12px 18px;border-radius:var(--r2);margin-top:12px;font-weight:600;font-size:.88rem;display:none;}
+.act-result.show{display:block}
+.res-ok{background:rgba(29,184,122,.12);border:1px solid var(--teal);color:var(--teal)}
+.res-fail{background:rgba(226,75,74,.1);border:1px solid var(--coral);color:var(--coral)}
+
+/* ── QUIZ ── */
+.quiz-wrap{display:grid;grid-template-columns:1fr 1fr;gap:28px;height:100%}
+.quiz-img-panel{border-radius:var(--r);overflow:hidden;position:relative}
+.quiz-img-panel img{width:100%;height:100%;object-fit:cover;display:block;}
+.quiz-right{display:flex;flex-direction:column;justify-content:center}
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;cursor:pointer;transition:all .2s;font-size:.86rem;line-height:1.5;}
+.q-opt:hover:not(.disabled){background:var(--bluef);border-color:rgba(77,166,255,.4)}
+.q-opt.correct{background:rgba(29,184,122,.13);border-color:var(--teal);color:var(--teal)}
+.q-opt.wrong{background:rgba(226,75,74,.1);border-color:var(--coral);color:var(--coral)}
+
+/* ── ACCESSIBILITY & OTHERS ── */
+.skip-link{position:absolute;top:-60px;left:12px;background:var(--gold);color:var(--bg);font-family:var(--fhead);font-size:.75rem;padding:10px 18px;border-radius:var(--r2);z-index:9999;transition:top .2s;text-decoration:none}
+.skip-link:focus{top:12px}
+body.reading-mode{filter:invert(0.93) hue-rotate(180deg);background-color:#f0f4ff}
+body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
+.nav-btn.locked{opacity:.85;color:#ffb2b2;border-color:rgba(226,75,74,.45);background:rgba(226,75,74,.08)}
+.q-fb{display:none;margin-top:10px;padding:10px 14px;background:rgba(0,0,0,.3);border-left:3px solid var(--gold);border-radius:0 var(--r2) var(--r2) 0;font-size:.82rem;color:var(--muted);line-height:1.6}
+.q-text{font-size:.95rem;font-weight:600;color:var(--white);margin-bottom:14px;line-height:1.6}
+.opt-l{font-family:var(--fhead);font-size:.68rem;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.07);color:var(--muted);flex-shrink:0;margin-top:1px}
+.q-opt.correct .opt-l{background:var(--teal);color:#fff}
+.q-opt.wrong .opt-l{background:var(--coral);color:#fff}
+@media(max-width:700px){.planet-slide{flex-direction:column!important}.planet-img-panel{width:100%!important;height:220px}.quiz-wrap,.act-layout{grid-template-columns:1fr}.slide-body{padding:22px 18px !important}}
+</style>
+</head>
+<body>
+<a href="#deck" class="skip-link" tabindex="1">Saltar al contenido principal</a>
+<canvas id="star-canvas"></canvas>
+
+<div id="deck" role="main">
+
+<div class="slide active" id="s0c">
+  <div class="premium-cover">
+      <div class="premium-bg-gradient"></div>
+      <div class="premium-nebula"></div>
+      <div class="premium-content">
+          <p class="premium-pre">Explorando el Sistema Solar</p>
+          <h1 class="premium-title" style="background:linear-gradient(to bottom, #ffffff 30%, #4DA6FF); -webkit-background-clip:text; background-clip:text;">SATÉLITES NATURALES</h1>
+          <p class="premium-sub">Explorando los mundos que orbitan planetas</p>
+          <button class="premium-cta" onclick="goSlide(1)">INICIAR MÓDULO →</button>
+      </div>
+      <div class="premium-meta">
+          <div class="pm-item"><span class="pm-label">Módulo</span><span class="pm-val">Astronomía</span></div>
+          <div class="pm-item"><span class="pm-label">Autor</span><span class="pm-val">Jampyer Malla</span></div>
+          <div class="pm-item"><span class="pm-label">Duración</span><span class="pm-val">45 Minutos</span></div>
+      </div>
+  </div>
+</div>
+
+<div class="slide" id="s1c">
+  <div class="slide-strip"><span class="strip-label">📋 Objetivos</span><span class="strip-dcd">Ciencias Naturales</span></div>
+  <div class="slide-body" style="justify-content:center;height:100%">
+    <div>
+      <p class="sec-title">Objetivo de aprendizaje</p>
+      <div style="background:linear-gradient(135deg,rgba(245,200,66,.07),rgba(77,166,255,.06));border:1px solid rgba(245,200,66,.25);border-left:4px solid var(--gold);padding:28px 32px;font-size:1.05rem;line-height:1.9;text-align:center;border-radius:0 var(--r) var(--r) 0">
+        <strong class="text-gold">Explicar</strong> las características físicas, origen y relevancia científica de los principales satélites del Sistema Solar (La Luna, Titán y Europa), identificando su composición y relacionando cada satélite con los fenómenos que ejerce sobre su planeta anfitrión.
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s2c">
+  <div class="slide-strip"><span class="strip-label">🌌 Contexto</span><span class="strip-dcd">Definición y Origen</span></div>
+  <div class="slide-body">
+    <p class="sec-title">¿Qué son los Satélites Naturales?</p>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:20px;">
+      <div class="info-card">
+        <h3>🪐 Definición</h3>
+        <p style="line-height:1.7; font-size:.9rem">Los satélites naturales son cuerpos celestes que orbitan alrededor de planetas. Funcionan gracias a la fuerza gravitatoria, que mantiene su trayectoria orbital estable permitiendo interacciones dinámicas constantes.</p>
+      </div>
+      <div class="info-card">
+        <h3>💥 El Origen Diverso</h3>
+        <ul class="sp">
+          <li><strong>Formación simultánea:</strong> Se formaron junto al planeta desde el mismo disco de gas y polvo.</li>
+          <li><strong>Captura gravitacional:</strong> Asteroides u objetos atrapados por la gravedad del planeta.</li>
+          <li><strong>Colisiones catastróficas:</strong> Surgieron tras un choque masivo de cuerpos primitivos.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide planet-slide" id="s3c">
+  <div class="planet-img-panel">
+    <img src="https://ciencia.nasa.gov/wp-content/uploads/sites/2/2023/07/Luna_5-jpeg.webp?resize=1200,1193" alt="La Luna" loading="lazy">
+    <div class="p-gradient" style="background:linear-gradient(to right, transparent 55%, rgba(10,16,32,1) 100%), linear-gradient(to bottom, rgba(6,11,24,.3) 0%, transparent 30%, transparent 70%, rgba(6,11,24,.5) 100%)"></div>
+    <span class="planet-type-over badge-ice" style="border-color:var(--gold);color:var(--gold);background:rgba(245,200,66,.15)">TIERRA I</span>
+    <h2 class="planet-name-over" style="color:var(--white)">LA LUNA</h2>
+  </div>
+  <div class="planet-data-panel">
+    <p class="pd-label">Satélite 1 de 3</p>
+    <p class="pd-title" style="color:var(--gold)">NUESTRO VECINO ROCOSO</p>
+    <table class="pd-table">
+      <tr><td>Superficie</td><td>Rocosa y llena de cráteres intactos por la falta de atmósfera.</td></tr>
+      <tr><td>Efectos</td><td>Su gravedad influye en las mareas terrestres y estabiliza el eje del planeta.</td></tr>
+    </table>
+
+    <div class="tide-box">
+      <h4 style="font-family:var(--fhead); font-size:.7rem; color:var(--blue); margin-bottom:5px;">SIMULADOR DE MAREAS GRAVITACIONALES</h4>
+      <input type="range" id="tideSlider" class="tide-slider" min="0" max="100" value="0" oninput="simulateTide(this.value)">
+      <div id="tide-container">
+          <div id="earth-wrapper">
+              <img id="earth-img" src="https://ciencia.nasa.gov/wp-content/uploads/sites/2/2023/06/westernhemisphere_geos_2019246_lrg-jpeg.webp?resize=1200,1200" alt="Tierra">
+              <div id="water-bulge"></div>
+          </div>
+          <img id="moon-game" src="https://images-assets.nasa.gov/image/PIA13528/PIA13528~orig.jpg?w=1521&h=1521&fit=clip&crop=faces%2Cfocalpoint" alt="Luna">
+      </div>
+    </div>
+
+    <div class="checkpoint-panel" id="panel-gk1">
+      <div class="checkpoint-head">
+        <span class="checkpoint-tag">Reto 1 · Formación</span>
+        <div class="checkpoint-title">Según la Teoría del Gran Impacto, ¿con qué cuerpo primitivo chocó la Tierra para formar la Luna?</div>
+      </div>
+      <div class="checkpoint-options">
+        <button class="checkpoint-option" onclick="selGK('gk1','a',this)">A) Un asteroide del Cinturón Principal.</button>
+        <button class="checkpoint-option" onclick="selGK('gk1','b',this)">B) Un cuerpo del tamaño de Marte llamado Theia.</button>
+        <button class="checkpoint-option" onclick="selGK('gk1','c',this)">C) Con un cometa gigante.</button>
+      </div>
+      <div class="checkpoint-feedback" id="fb-gk1">Selecciona una opción para avanzar.</div>
+      <button class="checkpoint-cta" id="btn-gk1" onclick="checkGK('gk1', 'b', '¡Exacto! Theia colisionó con la Tierra y los escombros formaron la Luna.')" disabled>Comprobar</button>
+    </div>
+  </div>
+</div>
+
+<div class="slide planet-slide" id="s4c">
+  <div class="planet-img-panel">
+    <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/0/PIA02145-1200w.jpg?w=1200&h=400&fit=clip&crop=faces%2Cfocalpoint" alt="Titán" loading="lazy">
+    <div class="p-gradient" style="background:linear-gradient(to right, transparent 55%, rgba(10,16,32,1) 100%), linear-gradient(to bottom, rgba(6,11,24,.3) 0%, transparent 30%, transparent 70%, rgba(6,11,24,.5) 100%)"></div>
+    <span class="planet-type-over badge-gas" style="border-color:var(--coral);color:var(--coral);background:rgba(226,75,74,.15)">SATURNO VI</span>
+    <h2 class="planet-name-over" style="color:var(--coral)">TITÁN</h2>
+  </div>
+  <div class="planet-data-panel">
+    <p class="pd-label">Satélite 2 de 3</p>
+    <p class="pd-title" style="color:var(--coral)">EL MUNDO ANARANJADO</p>
+    <table class="pd-table">
+      <tr><td>Atmósfera</td><td>Densa, compuesta principalmente de nitrógeno (similar a la Tierra primitiva).</td></tr>
+      <tr><td>Química Única</td><td>Posee un ciclo hidrológico basado en metano y etano líquido (forma nubes y lluvia).</td></tr>
+      <tr><td>Singularidad</td><td>Único satélite del Sistema Solar con atmósfera densa y líquidos estables en su superficie.</td></tr>
+    </table>
+
+    <div class="checkpoint-panel" id="panel-gk2">
+      <div class="checkpoint-head">
+        <span class="checkpoint-tag">Reto 2 · Atmósfera</span>
+        <div class="checkpoint-title">¿Cuál es el gas que domina la gruesa atmósfera de Titán?</div>
+      </div>
+      <div class="checkpoint-options">
+        <button class="checkpoint-option" onclick="selGK('gk2','a',this)">A) Metano líquido.</button>
+        <button class="checkpoint-option" onclick="selGK('gk2','b',this)">B) Oxígeno respirable.</button>
+        <button class="checkpoint-option" onclick="selGK('gk2','c',this)">C) Nitrógeno.</button>
+      </div>
+      <div class="checkpoint-feedback" id="fb-gk2">Selecciona una opción para avanzar.</div>
+      <button class="checkpoint-cta" id="btn-gk2" onclick="checkGK('gk2', 'c', '¡Correcto! Titán posee una atmósfera sumamente densa de nitrógeno.')" disabled>Comprobar</button>
+    </div>
+  </div>
+</div>
+
+<div class="slide planet-slide" id="s5c">
+  <div class="planet-img-panel">
+    <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/e/europa_th.jpg?w=320&h=240&fit=clip&crop=faces%2Cfocalpoint" alt="Europa" loading="lazy" style="transform:scale(1)">
+    <div class="p-gradient" style="background:linear-gradient(to right, transparent 55%, rgba(10,16,32,1) 100%), linear-gradient(to bottom, rgba(6,11,24,.3) 0%, transparent 30%, transparent 70%, rgba(6,11,24,.5) 100%)"></div>
+    <span class="planet-type-over badge-ice" style="border-color:var(--teal);color:var(--teal)">JÚPITER II</span>
+    <h2 class="planet-name-over" style="color:var(--teal)">EUROPA</h2>
+  </div>
+  <div class="planet-data-panel">
+    <p class="pd-label">Satélite 3 de 3</p>
+    <p class="pd-title" style="color:var(--teal)">EL OCÉANO OCULTO</p>
+    <table class="pd-table">
+      <tr><td>Superficie</td><td>Corteza de hielo lisa y brillante que se fractura y renueva constantemente. Alta radiación.</td></tr>
+      <tr><td>Océano Subterráneo</td><td>Alberga un inmenso océano global de agua salada bajo la corteza de hielo.</td></tr>
+    </table>
+
+    <div class="checkpoint-panel" id="panel-gk3">
+      <div class="checkpoint-head">
+        <span class="checkpoint-tag">Reto 3 · Termodinámica</span>
+        <div class="checkpoint-title">Al estar tan lejos del Sol, ¿qué fenómeno mantiene líquido el océano subterráneo de Europa?</div>
+      </div>
+      <div class="checkpoint-options">
+        <button class="checkpoint-option" onclick="selGK('gk3','a',this)">A) El calor de la intensa radiación solar.</button>
+        <button class="checkpoint-option" onclick="selGK('gk3','b',this)">B) La fricción gravitacional provocada por Júpiter.</button>
+        <button class="checkpoint-option" onclick="selGK('gk3','c',this)">C) Núcleos volcánicos activos en su superficie.</button>
+      </div>
+      <div class="checkpoint-feedback" id="fb-gk3">Selecciona una opción para avanzar.</div>
+      <button class="checkpoint-cta" id="btn-gk3" onclick="checkGK('gk3', 'b', '¡Perfecto! La masiva gravedad de Júpiter estira y comprime la luna, generando calor interno.')" disabled>Comprobar</button>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s6c">
+  <div class="slide-strip"><span class="strip-label">📊 Síntesis</span><span class="strip-dcd">Resumen Comparativo</span></div>
+  <div class="slide-body">
+    <p class="sec-title">Comparativa de los 3 mundos</p>
+    <div style="overflow-x:auto">
+      <table class="pd-table" style="background:var(--card);border:1px solid var(--border);border-radius:var(--r)">
+        <thead>
+          <tr>
+            <th style="text-align:left;color:var(--gold);padding:10px">Satélite</th>
+            <th style="text-align:left;color:var(--white);padding:10px">Planeta</th>
+            <th style="text-align:left;color:var(--white);padding:10px">Superficie / Rasgo principal</th>
+            <th style="text-align:left;color:var(--white);padding:10px">Dato clave</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="color:var(--gold);font-weight:bold">La Luna</td><td>Tierra</td><td>Rocosa, repleta de cráteres (sin atmósfera).</td><td>Controla las mareas y estabiliza el eje terrestre.</td></tr>
+          <tr><td style="color:var(--coral);font-weight:bold">Titán</td><td>Saturno</td><td>Atmósfera densa anaranjada (Nitrógeno).</td><td>Lagos y ríos estables de metano líquido.</td></tr>
+          <tr><td style="color:var(--teal);font-weight:bold">Europa</td><td>Júpiter</td><td>Corteza lisa de hielo brillante con fracturas.</td><td>Océano de agua salada oculto (fricción gravitacional).</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s7c">
+  <div class="slide-strip"><span class="strip-label">💭 Reflexión</span><span class="strip-dcd">Construye tu propio criterio</span></div>
+  <div class="slide-body" style="align-items:center;text-align:center">
+    <div style="font-size:3rem;margin-bottom:12px">🤔</div>
+    <h2 style="font-family:var(--fhead);font-size:1.2rem;color:var(--gold);margin-bottom:16px;letter-spacing:2px">PIENSA Y RESPONDE</h2>
+    <div style="background:var(--card);border:1px solid var(--gold);border-radius:var(--r);padding:20px;max-width:700px;text-align:left">
+      <p style="font-size:1rem;font-weight:600;margin-bottom:10px">Imagina que la Tierra nunca hubiera chocado con el protoplaneta Theia y no tuviéramos a la Luna.</p>
+      <p style="color:var(--muted);font-size:.9rem;margin-bottom:16px">Basándote en los efectos de su fuerza gravitatoria, ¿cómo crees que sería la vida en la Tierra (o los océanos) si no existiera nuestro satélite natural?</p>
+      <textarea id="reflexion-text" placeholder="Escribe tu reflexión aquí... (mínimo 20 palabras)" style="width:100%;min-height:100px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:var(--r2);color:var(--white);padding:12px;font-family:var(--fbody);resize:vertical" oninput="checkReflexion()"></textarea>
+      <div id="ref-feedback" style="margin-top:10px;font-size:.83rem;color:var(--muted);min-height:22px"></div>
+      <button id="ref-continue" onclick="goSlide(8)" disabled style="margin-top:10px;background:var(--gold);color:var(--bg);font-family:var(--fhead);padding:10px 20px;border-radius:var(--r2);border:none;cursor:not-allowed;opacity:.4">CONTINUAR →</button>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s8c">
+  <div class="slide-strip"><span class="strip-label">🗣️ Debate en Clase</span><span class="strip-dcd">Pensamiento crítico y exploración</span></div>
+  <div class="slide-body">
+    <p class="sec-title">¿Perforar el hielo de Europa?</p>
+    <div style="background:var(--card);border:1px solid var(--border);padding:20px;border-radius:var(--r);line-height:1.7">
+      <strong class="text-gold">Premisa:</strong> Los científicos creen que el océano bajo el hielo de Europa es el mejor candidato para encontrar vida extraterrestre. Se planean misiones para perforar la corteza e introducir submarinos robóticos.
+      <br><br>
+      <strong class="text-blue">Debate:</strong> Divide la clase. Grupo A argumentará a favor de realizar esta misión lo antes posible para responder la gran pregunta "¿Estamos solos?". Grupo B argumentará en contra, basados en el principio de "Protección Planetaria", advirtiendo el riesgo de contaminar el océano prístino con bacterias de la Tierra.
+    </div>
+    <div style="text-align:center;margin-top:20px">
+      <button class="nav-btn" style="background:var(--teal);color:#fff;border:none;padding:12px 24px;display:inline-flex" onclick="goSlide(9)">⚡ IR A LA ACTIVIDAD</button>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s9c">
+  <div class="slide-strip"><span class="strip-label">⚡ Actividad</span><span class="strip-dcd">2 Fases interactivas</span></div>
+  <div class="slide-body" style="align-items:center;text-align:center;justify-content:center">
+    <div style="font-size:3rem;margin-bottom:20px">🚀</div>
+    <h2 style="font-family:var(--fhead);font-size:1.3rem;color:var(--gold);margin-bottom:16px;letter-spacing:2px">MISIONES DE RECONOCIMIENTO</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-width:680px;text-align:left">
+      <div class="info-card"><h3>Fase 1 · Visual</h3><p style="font-size:.86rem;color:var(--muted)">Arrastra el nombre del satélite a su fotografía satelital correspondiente.</p></div>
+      <div class="info-card"><h3>Fase 2 · Análisis</h3><p style="font-size:.86rem;color:var(--muted)">Empareja cada característica física o atmosférica con el mundo al que pertenece.</p></div>
+    </div>
+    <button class="nav-btn" style="margin-top:20px;background:var(--gold);color:var(--bg);font-weight:bold" onclick="goSlide(10)">COMENZAR MISIONES →</button>
+  </div>
+</div>
+
+<div class="slide" id="s10c">
+  <div class="slide-strip"><span class="strip-label">⚡ Actividad · Fase 1</span><span class="strip-dcd">Reconocimiento Visual</span></div>
+  <div class="slide-body">
+    <p class="sec-title">Asigna la identidad correcta</p>
+    <p style="margin-bottom:10px; font-size:.9rem">Selecciona el nombre del satélite y colócalo en la zona de aterrizaje de su imagen.</p>
+    
+    <div class="bank-chips" id="f1-bank" style="justify-content:center">
+      <button class="pchip" id="n-luna" onclick="f1Select('luna')">🌕 La Luna</button>
+      <button class="pchip" id="n-titan" onclick="f1Select('titan')">🪐 Titán</button>
+      <button class="pchip" id="n-europa" onclick="f1Select('europa')">❄️ Europa</button>
+    </div>
+
+    <div class="act-layout" style="grid-template-columns:1fr 1fr 1fr; gap:15px; margin-top:20px;">
+      <div style="display:flex; flex-direction:column; align-items:center;">
+          <img src="https://ciencia.nasa.gov/wp-content/uploads/sites/2/2023/07/Luna_5-jpeg.webp" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid var(--border); margin-bottom:10px;" alt="Luna">
+          <div class="drop-zone dz-satelite" id="dz-luna" onclick="f1Drop('luna')" style="width:100%; min-height:60px; padding:10px; display:flex; justify-content:center; align-items:center;">
+             <div class="dz-chips" id="dz-luna-chips"></div>
+          </div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+          <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/0/PIA02145-1200w.jpg" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid var(--border); margin-bottom:10px;" alt="Titán">
+          <div class="drop-zone dz-satelite" id="dz-titan" onclick="f1Drop('titan')" style="width:100%; min-height:60px; padding:10px; display:flex; justify-content:center; align-items:center;">
+            <div class="dz-chips" id="dz-titan-chips"></div>
+          </div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center;">
+          <img src="https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/e/europa_th.jpg" style="width:120px; height:120px; border-radius:50%; object-fit:cover; border:2px solid var(--border); margin-bottom:10px;" alt="Europa">
+          <div class="drop-zone dz-satelite" id="dz-europa" onclick="f1Drop('europa')" style="width:100%; min-height:60px; padding:10px; display:flex; justify-content:center; align-items:center;">
+            <div class="dz-chips" id="dz-europa-chips"></div>
+          </div>
+      </div>
+    </div>
+    
+    <div id="f1-res" class="act-result"></div>
+    <button class="checkpoint-cta" id="f1-verify" onclick="f1Verify()" disabled style="max-width:200px;margin-top:14px;align-self:center">Verificar →</button>
+  </div>
+</div>
+
+<div class="slide" id="s11c">
+  <div class="slide-strip"><span class="strip-label">⚡ Actividad · Fase 2</span><span class="strip-dcd">Emparejamiento Físico</span></div>
+  <div class="slide-body">
+    <p class="sec-title">Asocia la característica con el satélite</p>
+    <div style="display:flex;flex-direction:column;gap:12px; max-width:700px; margin:0 auto; width:100%;">
+      
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:var(--fhead);font-size:.75rem;color:var(--gold);min-width:140px">Sin atmósfera, rocosa</span>
+        <select id="ms-r1" style="flex:1;background:var(--card);color:#fff;border:1px solid var(--border);padding:10px;border-radius:4px">
+          <option value="">-- Selecciona --</option>
+          <option value="luna">La Luna</option>
+          <option value="titan">Titán</option>
+          <option value="europa">Europa</option>
+        </select>
+        <span id="mf-r1" style="font-size:.8rem;min-width:20px"></span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:var(--fhead);font-size:.75rem;color:var(--gold);min-width:140px">Lagos de Metano líquido</span>
+        <select id="ms-r2" style="flex:1;background:var(--card);color:#fff;border:1px solid var(--border);padding:10px;border-radius:4px">
+          <option value="">-- Selecciona --</option>
+          <option value="luna">La Luna</option>
+          <option value="titan">Titán</option>
+          <option value="europa">Europa</option>
+        </select>
+        <span id="mf-r2" style="font-size:.8rem;min-width:20px"></span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:var(--fhead);font-size:.75rem;color:var(--gold);min-width:140px">Océano bajo el hielo</span>
+        <select id="ms-r3" style="flex:1;background:var(--card);color:#fff;border:1px solid var(--border);padding:10px;border-radius:4px">
+          <option value="">-- Selecciona --</option>
+          <option value="luna">La Luna</option>
+          <option value="titan">Titán</option>
+          <option value="europa">Europa</option>
+        </select>
+        <span id="mf-r3" style="font-size:.8rem;min-width:20px"></span>
+      </div>
+
+      <div style="display:flex;align-items:center;gap:10px">
+        <span style="font-family:var(--fhead);font-size:.75rem;color:var(--gold);min-width:140px">Atmósfera de Nitrógeno</span>
+        <select id="ms-r4" style="flex:1;background:var(--card);color:#fff;border:1px solid var(--border);padding:10px;border-radius:4px">
+          <option value="">-- Selecciona --</option>
+          <option value="luna">La Luna</option>
+          <option value="titan">Titán</option>
+          <option value="europa">Europa</option>
+        </select>
+        <span id="mf-r4" style="font-size:.8rem;min-width:20px"></span>
+      </div>
+
+    </div>
+    <div id="f2-res" class="act-result" style="max-width:700px; margin:14px auto 0;"></div>
+    <button class="checkpoint-cta" id="f2-verify" onclick="f2Verify()" style="max-width:200px;margin-top:14px; align-self:center">Verificar →</button>
+  </div>
+</div>
+
+<div class="slide" id="s12c" data-answer="a">
+  <div class="slide-strip"><span class="strip-label">📝 Evaluación · Pregunta 1 DE 5</span></div>
+  <div class="slide-body"><div class="quiz-wrap"><div class="quiz-img-panel"><img src="https://assets.science.nasa.gov/dynamicimage/assets/science/psd/lunar-science/internal_resources/585/Moon_formation_illustration.jpeg?w=576"></div><div class="quiz-right">
+    <p class="q-text">¿Qué cuerpo celeste colisionó con la Tierra primitiva para dar origen a la Luna?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q1','a',this)"><span class="opt-l">A</span>Theia.</div>
+      <div class="q-opt" onclick="qSelect('q1','b',this)"><span class="opt-l">B</span>Ceres.</div>
+      <div class="q-opt" onclick="qSelect('q1','c',this)"><span class="opt-l">C</span>Ganímedes.</div>
+      <div class="q-opt" onclick="qSelect('q1','d',this)"><span class="opt-l">D</span>Un asteroide común.</div>
+    </div>
+    <div class="q-fb" id="fb-q1">Correcto. La Teoría del Gran Impacto propone que el cuerpo primitivo que colisionó fue Theia.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(13)" style="display:none;margin-top:10px">Siguiente →</button>
+  </div></div></div>
+</div>
+
+<div class="slide" id="s13c" data-answer="b">
+  <div class="slide-strip"><span class="strip-label">📝 Evaluación · Pregunta 2 DE 5</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <p class="q-text">¿Cuál es el gas dominante que conforma la gruesa atmósfera de Titán?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q2','a',this)"><span class="opt-l">A</span>Oxígeno respirable.</div>
+      <div class="q-opt" onclick="qSelect('q2','b',this)"><span class="opt-l">B</span>Nitrógeno.</div>
+      <div class="q-opt" onclick="qSelect('q2','c',this)"><span class="opt-l">C</span>Dióxido de carbono.</div>
+      <div class="q-opt" onclick="qSelect('q2','d',this)"><span class="opt-l">D</span>Helio.</div>
+    </div>
+    <div class="q-fb" id="fb-q2">El nitrógeno es el gas principal de la densa atmósfera de Titán, similar a la Tierra primitiva.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(14)" style="display:none;margin-top:10px;width:fit-content;align-self:center">Siguiente →</button>
+  </div>
+</div>
+
+<div class="slide" id="s14c" data-answer="c">
+  <div class="slide-strip"><span class="strip-label">📝 Evaluación · Pregunta 3 DE 5</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <p class="q-text">¿Qué fenómeno genera el inmenso calor interno en Europa para mantener líquido su océano subterráneo?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q3','a',this)"><span class="opt-l">A</span>Radiación directa del Sol.</div>
+      <div class="q-opt" onclick="qSelect('q3','b',this)"><span class="opt-l">B</span>Efecto invernadero extremo.</div>
+      <div class="q-opt" onclick="qSelect('q3','c',this)"><span class="opt-l">C</span>Fricción gravitacional generada por Júpiter.</div>
+      <div class="q-opt" onclick="qSelect('q3','d',this)"><span class="opt-l">D</span>Combustión interna de metano.</div>
+    </div>
+    <div class="q-fb" id="fb-q3">La enorme gravedad de Júpiter amasa y estira a Europa (fricción), lo que derrite el hielo interno.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(15)" style="display:none;margin-top:10px;width:fit-content;align-self:center">Siguiente →</button>
+  </div>
+</div>
+
+<div class="slide" id="s15c" data-answer="a">
+  <div class="slide-strip"><span class="strip-label">📝 Evaluación · Pregunta 4 DE 5</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <p class="q-text">¿Qué característica describe con precisión la corteza exterior congelada de Europa?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q4','a',this)"><span class="opt-l">A</span>Estructura joven, muy lisa y en constante renovación por el hielo.</div>
+      <div class="q-opt" onclick="qSelect('q4','b',this)"><span class="opt-l">B</span>Antigua, estática y totalmente repleta de cráteres de impacto.</div>
+      <div class="q-opt" onclick="qSelect('q4','c',this)"><span class="opt-l">C</span>Formada por roca volcánica altamente porosa.</div>
+      <div class="q-opt" onclick="qSelect('q4','d',this)"><span class="opt-l">D</span>Completamente inexistente.</div>
+    </div>
+    <div class="q-fb" id="fb-q4">Correcto. Al fracturarse, el agua sube y se congela, renovando la superficie y borrando cráteres antiguos.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(16)" style="display:none;margin-top:10px;width:fit-content;align-self:center">Siguiente →</button>
+  </div>
+</div>
+
+<div class="slide" id="s16c" data-answer="b">
+  <div class="slide-strip"><span class="strip-label">📝 Evaluación · Pregunta 5 DE 5</span></div>
+  <div class="slide-body"><div class="quiz-wrap"><div class="quiz-img-panel"><img src="https://assets.science.nasa.gov/dynamicimage/assets/science/psd/solar/2023/09/p/i/a/0/PIA02145-1200w.jpg"></div><div class="quiz-right">
+    <p class="q-text">¿Qué compuesto químico fluye de forma líquida formando los exóticos mares de Titán?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q5','a',this)"><span class="opt-l">A</span>Agua salada.</div>
+      <div class="q-opt" onclick="qSelect('q5','b',this)"><span class="opt-l">B</span>Metano y Etano líquidos.</div>
+      <div class="q-opt" onclick="qSelect('q5','c',this)"><span class="opt-l">C</span>Ácido sulfúrico altamente corrosivo.</div>
+      <div class="q-opt" onclick="qSelect('q5','d',this)"><span class="opt-l">D</span>Hidrógeno en estado líquido.</div>
+    </div>
+    <div class="q-fb" id="fb-q5">Titán es demasiado frío para el agua líquida, pero tiene lagos y lluvias de hidrocarburos como el Metano.</div>
+    <button class="checkpoint-cta q-next" onclick="showScore()" style="display:none;margin-top:10px;background:var(--teal)">Ver Resultados →</button>
+  </div></div></div>
+</div>
+
+<div class="slide" id="s17c">
+  <div class="slide-strip"><span class="strip-label">🏆 Resultado</span></div>
+  <div class="slide-body" style="align-items:center;text-align:center;justify-content:center">
+    <div style="width:140px;height:140px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;margin-bottom:24px;border:3px solid rgba(255,255,255,.1);" id="score-ring">
+      <span style="font-family:var(--fhead);font-size:3rem;font-weight:900;color:var(--gold);line-height:1" id="score-n">–</span>
+      <span style="font-family:var(--fhead);font-size:.75rem;color:var(--muted)">DE 5</span>
+    </div>
+    <p style="font-size:1.1rem;color:var(--white);margin-bottom:20px" id="score-msg"></p>
+    <div id="score-badge" style="padding:7px 22px;border-radius:20px;font-weight:700;font-size:.88rem;margin-bottom:22px"></div>
+    <div style="display:flex;gap:10px">
+      <button class="nav-btn" onclick="retryQuiz()">↺ Reintentar Evaluación</button>
+      <button class="nav-btn" onclick="goSlide(18)" style="background:var(--blue2);color:#fff">Créditos →</button>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s18c">
+  <div class="slide-strip"><span class="strip-label">📜 Créditos</span></div>
+  <div class="slide-body">
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px;margin-bottom:10px">
+      <h4 style="font-family:var(--fhead);color:var(--gold);margin-bottom:10px">Autor de Contenido y Mecánicas Originales</h4>
+      <p>Jampyer Alexander Malla Mendoza</p>
+    </div>
+    <div style="background:var(--card);border:1px solid var(--border);border-radius:var(--r);padding:20px">
+      <h4 style="font-family:var(--fhead);color:var(--gold);margin-bottom:10px">Referencias e Imágenes</h4>
+      <ul class="sp">
+        <li>NASA Science Missions: Cassini (Titán) y Galileo/Europa Clipper (Europa).</li>
+        <li>Simulaciones: NASA Goddard Space Flight Center.</li>
+        <li>Imágenes de Dominio Público NASA/JPL-Caltech.</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+</div><nav id="nav" role="navigation">
+  <button class="nav-btn" id="nav-prev" onclick="prevSlide()" disabled>&#8592; ANTERIOR</button>
+  <div class="nav-center">
+    <div class="nav-progress"><div class="nav-bar-fill" id="nav-fill" style="width:5%"></div></div>
+    <div class="nav-info">
+      <span class="nav-chapter" id="nav-chapter">PORTADA</span>
+      <span style="color:var(--dim)">|</span>
+      <span class="nav-count" id="nav-count">1 / 19</span>
+    </div>
+  </div>
+  <div style="display:flex;gap:5px;">
+    <a href="Índice.html" class="nav-btn" style="padding:6px 12px" title="Volver al Índice">🏠 ÍNDICE</a>
+    <button class="nav-btn" onclick="document.body.classList.toggle('reading-mode')" title="Modo lectura" style="padding:6px 10px">☀️</button>
+  </div>
+  <button class="nav-btn" id="nav-next" onclick="nextSlide()">SIGUIENTE &#8594;</button>
+</nav>
+
+<script>
+/* ── STARS GENERATOR ── */
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("star-canvas");
+    const ctx = canvas.getContext("2d");
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; drawStars(); }
+    function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for(let i=0; i<150; i++) {
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.random()})`;
+            ctx.beginPath();
+            ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    window.addEventListener("resize", resize); resize();
+});
+
+/* ── SLIDE ENGINE ── */
+const TOTAL = 19;
+let cur = 0;
+const slides = Array.from(document.querySelectorAll('.slide'));
+const CHAPTERS = ['PORTADA','OBJETIVOS','CONTEXTO','LA LUNA','TITÁN','EUROPA','SÍNTESIS','REFLEXIÓN','DEBATE','ACTIVIDAD','FASE 1','FASE 2','EVALUACIÓN','EVALUACIÓN','EVALUACIÓN','EVALUACIÓN','EVALUACIÓN','RESULTADO','CRÉDITOS'];
+
+const gkState = { gk1: false, gk2: false, gk3: false };
+let gkSel = { gk1: '', gk2: '', gk3: '' };
+
+function isSlideLocked(index) {
+  if(index === 3) return !gkState.gk1;
+  if(index === 4) return !gkState.gk2;
+  if(index === 5) return !gkState.gk3;
+  return false;
+}
+
+function selGK(id, val, btn) {
+  if(gkState[id]) return;
+  gkSel[id] = val;
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.checkpoint-option').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  document.getElementById('btn-' + id).disabled = false;
+}
+
+function checkGK(id, correctVal, successMsg) {
+  const isCorrect = (gkSel[id] === correctVal);
+  const panel = document.getElementById('panel-' + id);
+  const opts = panel.querySelectorAll('.checkpoint-option');
+  
+  if(isCorrect) {
+    gkState[id] = true;
+    panel.classList.add('completed');
+    opts.forEach(b => { if(b.classList.contains('selected')) b.classList.add('correct'); });
+    panel.querySelector('.checkpoint-cta').textContent = 'Continuar →';
+    panel.querySelector('.checkpoint-cta').onclick = () => nextSlide();
+    panel.querySelector('.checkpoint-feedback').innerHTML = `<strong>¡Desbloqueado!</strong> ${successMsg}`;
+  } else {
+    opts.forEach(b => { if(b.classList.contains('selected')) b.classList.add('wrong'); });
+    panel.querySelector('.checkpoint-feedback').innerHTML = `<span style="color:var(--coral)">Respuesta incorrecta. Revisa la ficha y vuelve a intentarlo.</span>`;
+  }
+  updateNav();
+}
+
+function goSlide(n) {
+  if(n < 0 || n >= TOTAL) return;
+  if(n > cur && isSlideLocked(cur)) return;
+  slides[cur].classList.remove('active', 'exit-l', 'enter-l');
+  slides[cur].classList.add(n > cur ? 'exit-l' : 'enter-l');
+  setTimeout(() => slides[cur].classList.remove('exit-l','enter-l'), 450);
+  cur = n;
+  slides[cur].classList.add('active');
+  updateNav();
+}
+function nextSlide() { goSlide(cur + 1); }
+function prevSlide() { goSlide(cur - 1); }
+
+function updateNav() {
+  const locked = isSlideLocked(cur);
+  document.getElementById('nav-prev').disabled = cur === 0;
+  const nextBtn = document.getElementById('nav-next');
+  nextBtn.disabled = cur === TOTAL - 1 || locked;
+  nextBtn.classList.toggle('locked', locked);
+  nextBtn.textContent = locked ? 'COMPLETA EL RETO' : 'SIGUIENTE →';
+  document.getElementById('nav-count').textContent = `${cur+1} / ${TOTAL}`;
+  document.getElementById('nav-chapter').textContent = CHAPTERS[cur];
+  document.getElementById('nav-fill').style.width = ((cur+1)/TOTAL*100) + '%';
+}
+
+/* ── JAMPYER TIDE SIMULATOR ── */
+function simulateTide(val) {
+  const moon = document.getElementById('moon-game'); const bulge = document.getElementById('water-bulge');
+  moon.style.transform = `translateX(${(val / 100) * -120}px) scale(${1 + (val / 100) * 0.4})`;
+  bulge.style.transform = `scaleX(${1 + (val/100)*0.35})`;
+}
+
+/* ── ACTIVITIES INTEGRADORAS (Fase 1 y 2) ── */
+let f1sel=null, f1placed={};
+function f1Select(id){
+  if(f1placed[id]) return;
+  document.querySelectorAll('.pchip').forEach(c=>c.classList.remove('sel-chip'));
+  f1sel = id; document.getElementById('n-'+id).classList.add('sel-chip');
+}
+function f1Drop(zone){
+  if(!f1sel || f1placed[f1sel]) return;
+  f1placed[f1sel] = zone;
+  const chip = document.getElementById('n-'+f1sel);
+  chip.classList.remove('sel-chip'); chip.classList.add('placed-chip');
+  
+  const isOk = (f1sel === zone);
+  const tag = document.createElement('div');
+  tag.className = 'dz-chip ' + (isOk?'dz-ok':'dz-fail');
+  tag.textContent = chip.textContent + (isOk?' ✓':' ✗');
+  document.getElementById('dz-'+zone+'-chips').appendChild(tag);
+  f1sel = null;
+  
+  if(Object.keys(f1placed).length === 3) document.getElementById('f1-verify').disabled = false;
+}
+function f1Verify(){
+  let score=0; Object.keys(f1placed).forEach(k=>{ if(f1placed[k]===k) score++; });
+  const r = document.getElementById('f1-res'); r.classList.add('show');
+  if(score === 3){
+    r.className = 'act-result show res-ok'; r.textContent = `✓ ¡Perfecto! Has identificado los 3 satélites.`;
+    const btn=document.getElementById('f1-verify'); btn.textContent='Ir a Fase 2 →'; btn.onclick=()=>goSlide(11);
+  } else {
+    r.className = 'act-result show res-fail'; r.textContent = `✗ Tienes errores. Las características visuales no coinciden.`;
+    f1placed={}; document.querySelectorAll('.pchip').forEach(c=>c.classList.remove('placed-chip'));
+    document.getElementById('dz-luna-chips').innerHTML=''; document.getElementById('dz-titan-chips').innerHTML=''; document.getElementById('dz-europa-chips').innerHTML='';
+    document.getElementById('f1-verify').disabled = true;
+  }
+}
+
+function f2Verify(){
+  const ans = {r1:'luna', r2:'titan', r3:'europa', r4:'titan'};
+  let score=0;
+  ['r1','r2','r3','r4'].forEach(id => {
+    const v = document.getElementById('ms-'+id).value;
+    const fb = document.getElementById('mf-'+id);
+    if(v === ans[id]){ score++; fb.textContent='✓'; fb.style.color='var(--teal)'; } 
+    else { fb.textContent='✗'; fb.style.color='var(--coral)'; }
+  });
+  const r = document.getElementById('f2-res'); r.classList.add('show');
+  if(score===4){
+    r.className='act-result show res-ok'; r.textContent='✓ ¡Excelente! Dominas las características. Entra a la Evaluación.';
+    const btn=document.getElementById('f2-verify'); btn.textContent='Ir a Evaluación →'; btn.onclick=()=>goSlide(12);
+  } else { r.className='act-result show res-fail'; r.textContent='✗ Tienes errores. Inténtalo de nuevo.'; }
+}
+
+/* ── QUIZ (5 Preguntas de Jampyer) ── */
+let qScore=0;
+function qSelect(qid, opt, el){
+  const slide = el.closest('.slide'); if(slide.dataset.done) return;
+  slide.dataset.done = '1';
+  const correct = slide.dataset.answer;
+  slide.querySelectorAll('.q-opt').forEach(o => { o.classList.add('disabled'); if(o.querySelector('.opt-l').textContent.toLowerCase() === correct) o.classList.add('correct'); });
+  if(opt === correct) { qScore++; el.classList.add('correct'); } else { el.classList.add('wrong'); }
+  slide.querySelector('.q-fb').style.display = 'block';
+  slide.querySelector('.q-next').style.display = 'block';
+}
+function showScore(){
+  document.getElementById('score-n').textContent = qScore;
+  const msg = qScore===5?'¡Dominio absoluto de los satélites!':qScore>=3?'Buen trabajo, pero aún puedes mejorar.':'Necesitas repasar las misiones espaciales.';
+  document.getElementById('score-msg').textContent = msg;
+  /* Cálculo para 5 preguntas (qScore / 5) */
+  document.getElementById('score-ring').style.background = `conic-gradient(var(--gold) ${qScore/5*360}deg, rgba(255,255,255,.05) 0deg)`;
+  goSlide(17);
+}
+function retryQuiz(){
+  qScore=0;
+  [12,13,14,15,16].forEach(s => {
+    const sl = slides[s]; delete sl.dataset.done;
+    sl.querySelectorAll('.q-opt').forEach(o => o.className = 'q-opt');
+    sl.querySelector('.q-fb').style.display = 'none'; sl.querySelector('.q-next').style.display = 'none';
+  });
+  goSlide(12);
+}
+function checkReflexion(){
+  const txt = document.getElementById('reflexion-text').value.trim();
+  const words = txt.split(/\s+/).filter(w=>w.length>0).length;
+  const btn = document.getElementById('ref-continue');
+  if(words>=20){ btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer'; document.getElementById('ref-feedback').textContent='✓'; }
+  else { btn.disabled=true; btn.style.opacity='.4'; document.getElementById('ref-feedback').textContent=`${words}/20 palabras`; }
+}
+
+updateNav();
+</script>
+</body>
+</html>

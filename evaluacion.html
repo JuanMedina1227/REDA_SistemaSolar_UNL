@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Evaluación Integradora | Sistema Solar - UNL 2026</title>
+<meta name="DC.title" content="Evaluación Integradora - Explorando el Sistema Solar">
+<meta name="DC.creator" content="Grupo RED Sistema Solar - UNL 2026">
+<meta name="DC.description" content="Evaluación sumativa integradora de los 7 módulos del REDA Sistema Solar.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;800&family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060b18; --bg2:#0a1020; --bg3:#0d1530;
+  --gold:#F5C842; --gold2:#d4a500; --goldf:rgba(245,200,66,0.08);
+  --blue:#4DA6FF; --blue2:#1a5fa8; --bluef:rgba(77,166,255,0.08);
+  --teal:#1DB87A; --tealf:rgba(29,184,122,0.08);
+  --coral:#E24B4A;
+  --white:#EFF3FF; --muted:#7a8fb5; --dim:#3a4a6b;
+  --card:rgba(10,16,32,0.85);
+  --border:rgba(77,166,255,0.15);
+  --fhead:Orbitron,sans-serif;
+  --fbody:"Exo 2",sans-serif;
+  --r:10px; --r2:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:var(--fbody);color:var(--white);display:flex;flex-direction:column}
+
+#star-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+#deck{position:relative;flex:1;overflow:hidden;z-index:1}
+.slide{
+  position:absolute;inset:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s ease,transform .45s ease;
+  transform:translateX(60px);
+  display:flex;flex-direction:column;
+}
+.slide.active{opacity:1;pointer-events:auto;transform:translateX(0)}
+.slide.exit-l{opacity:0;transform:translateX(-60px)}
+.slide.enter-r{opacity:0;transform:translateX(60px)}
+.slide.enter-l{opacity:0;transform:translateX(-60px)}
+
+/* ── NAVIGATION BAR ── */
+#nav{
+  flex-shrink:0;height:54px;background:rgba(6,11,24,0.95);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;z-index:10;backdrop-filter:blur(8px);
+}
+.nav-btn{
+  background:transparent;border:1px solid var(--border);color:var(--muted);
+  font-family:var(--fhead);font-size:.65rem;letter-spacing:1.5px;
+  padding:7px 18px;border-radius:var(--r2);cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;gap:6px;
+  text-decoration:none;
+}
+.nav-btn:hover:not(:disabled){color:var(--white);border-color:var(--blue);background:var(--bluef)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:5px}
+.nav-progress{width:220px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.nav-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--blue));border-radius:2px;transition:width .4s ease}
+.nav-info{display:flex;align-items:center;gap:10px;font-size:.75rem;color:var(--muted)}
+.nav-chapter{font-family:var(--fhead);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.nav-count{font-family:var(--fhead);font-size:.7rem;color:var(--muted)}
+
+/* ── SLIDE HEADER STRIP ── */
+.slide-strip{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 32px;border-bottom:1px solid var(--border);
+  background:rgba(6,11,24,0.6);backdrop-filter:blur(4px);flex-shrink:0;
+}
+.strip-label{font-family:var(--fhead);font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
+.strip-dcd{font-size:.7rem;color:var(--muted)}
+
+/* ── SLIDE BODY ── */
+.slide-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:26px 42px;display:flex;flex-direction:column;gap:18px}
+.slide-body::-webkit-scrollbar{width:4px}
+.slide-body::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+
+/* ── PREMIUM COVER ── */
+.premium-cover{position:absolute;inset:0;background-color:#020617;display:flex;flex-direction:column;justify-content:center;align-items:center;overflow:hidden}
+.premium-bg-gradient{position:absolute;inset:0;background:radial-gradient(circle at 20% 30%,rgba(245,200,66,.15) 0%,transparent 40%),radial-gradient(circle at 80% 70%,rgba(77,166,255,.1) 0%,transparent 40%);z-index:0}
+.premium-nebula{position:absolute;top:-30%;right:-10%;width:60%;height:130%;background:radial-gradient(ellipse at 60% 50%,rgba(245,200,66,.12) 0%,rgba(77,166,255,.06) 40%,transparent 70%);pointer-events:none;z-index:1;animation:nebula-drift 8s ease-in-out infinite alternate}
+@keyframes nebula-drift{from{transform:scale(1) rotate(-2deg)}to{transform:scale(1.08) rotate(2deg)}}
+.premium-content{z-index:10;text-align:center;max-width:900px;padding:0 20px}
+.premium-pre{font-family:'Plus Jakarta Sans',sans-serif;text-transform:uppercase;letter-spacing:6px;color:var(--gold);font-size:.75rem;margin-bottom:20px}
+.premium-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:clamp(2.5rem,6vw,4.5rem);font-weight:800;line-height:1.05;margin-bottom:20px;background:linear-gradient(to bottom,#ffffff 30%,#94a3b8);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.premium-sub{font-size:1rem;font-weight:300;color:#94a3b8;margin-bottom:40px}
+.premium-cta{background:#F5C842;color:#020617;padding:15px 35px;border-radius:50px;font-family:'Plus Jakarta Sans',sans-serif;font-weight:800;font-size:.9rem;border:none;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.premium-cta:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(245,200,66,.4)}
+.premium-meta{position:absolute;bottom:30px;display:flex;gap:40px;z-index:10;flex-wrap:wrap;justify-content:center}
+.pm-item{display:flex;flex-direction:column;align-items:center;gap:5px}
+.pm-label{font-size:.6rem;text-transform:uppercase;letter-spacing:2px;color:#64748b}
+.pm-val{font-size:.85rem;color:#f1f5f9;font-weight:600}
+
+/* ── COMPONENTS ── */
+.sec-title{font-family:var(--fhead);font-size:1rem;font-weight:700;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.info-card{background:rgba(10,16,32,.82);border:1px solid var(--border);border-radius:var(--r);padding:20px;backdrop-filter:blur(6px)}
+
+/* ── QUIZ ── */
+.q-opts{display:flex;flex-direction:column;gap:8px}
+.q-opt{display:flex;align-items:flex-start;gap:10px;background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;cursor:pointer;transition:all .2s;font-size:.86rem;line-height:1.5}
+.q-opt:hover:not(.disabled){background:var(--bluef);border-color:rgba(77,166,255,.4)}
+.q-opt.correct{background:rgba(29,184,122,.13);border-color:var(--teal);color:var(--teal)}
+.q-opt.wrong{background:rgba(226,75,74,.1);border-color:var(--coral);color:var(--coral)}
+.q-opt.disabled{cursor:default}
+.opt-l{font-family:var(--fhead);font-size:.68rem;min-width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.07);color:var(--muted);flex-shrink:0;margin-top:1px}
+.q-opt.correct .opt-l{background:var(--teal);color:#fff}
+.q-opt.wrong .opt-l{background:var(--coral);color:#fff}
+.q-fb{display:none;margin-top:10px;padding:10px 14px;background:rgba(0,0,0,.3);border-left:3px solid var(--gold);border-radius:0 var(--r2) var(--r2) 0;font-size:.82rem;color:var(--muted);line-height:1.6}
+.q-text{font-size:.95rem;font-weight:600;color:var(--white);margin-bottom:14px;line-height:1.6}
+.q-module-tag{font-family:var(--fhead);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block;padding:4px 10px;background:rgba(255,255,255,.04);border-radius:var(--r2);border:1px solid var(--border);width:fit-content}
+
+.checkpoint-cta{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  background:linear-gradient(135deg,var(--blue2),var(--blue));
+  color:#fff;border:none;border-radius:var(--r2);
+  font-family:var(--fhead);font-size:.7rem;letter-spacing:1.5px;
+  padding:12px 24px;cursor:pointer;transition:all .2s;
+  margin-top:10px;width:fit-content;align-self:center;
+}
+.checkpoint-cta:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(77,166,255,.35)}
+
+/* ── SCORE RING ── */
+.score-container{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px}
+.score-ring-wrap{width:160px;height:160px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(255,255,255,.03);border:3px solid rgba(255,255,255,.1)}
+.score-num{font-family:var(--fhead);font-size:3.5rem;font-weight:900;color:var(--gold);line-height:1}
+.score-denom{font-family:var(--fhead);font-size:.75rem;color:var(--muted)}
+.score-msg{font-size:1rem;font-weight:600;color:var(--white);text-align:center;max-width:400px}
+.score-breakdown{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px;width:100%;max-width:700px;margin-top:10px}
+.score-cell{background:rgba(10,16,32,.8);border:1px solid var(--border);border-radius:var(--r2);padding:10px 14px;text-align:center}
+.score-cell .mod-label{font-family:var(--fhead);font-size:.55rem;letter-spacing:2px;color:var(--muted);display:block;margin-bottom:4px}
+.score-cell .mod-name{font-size:.72rem;color:var(--white);line-height:1.4}
+
+/* ── INSTRUCCIONES ── */
+.instr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.instr-item{background:rgba(10,16,32,.8);border:1px solid var(--border);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:8px}
+.instr-icon{font-size:1.8rem}
+.instr-title{font-family:var(--fhead);font-size:.7rem;letter-spacing:1.5px;color:var(--gold)}
+.instr-text{font-size:.82rem;color:var(--muted);line-height:1.6}
+
+@media(max-width:700px){
+  .slide-body{padding:18px !important}
+  .instr-grid{grid-template-columns:1fr}
+  .score-breakdown{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+<canvas id="star-canvas"></canvas>
+
+<div id="deck" role="main">
+
+<!-- s0c: PORTADA -->
+<div class="slide active" id="s0c">
+  <div class="premium-cover">
+    <div class="premium-bg-gradient"></div>
+    <div class="premium-nebula"></div>
+    <div class="premium-content">
+      <p class="premium-pre">Evaluación Integradora · REDA Sistema Solar</p>
+      <h1 class="premium-title">PRUEBA FINAL<br>INTEGRADORA</h1>
+      <p class="premium-sub">Demuestra lo que aprendiste en los 7 módulos del Sistema Solar</p>
+      <button class="premium-cta" onclick="goSlide(1)">COMENZAR EVALUACIÓN →</button>
+    </div>
+    <div class="premium-meta">
+      <div class="pm-item"><span class="pm-label">Preguntas</span><span class="pm-val">10 en total</span></div>
+      <div class="pm-item"><span class="pm-label">Módulos</span><span class="pm-val">T1 – T7</span></div>
+      <div class="pm-item"><span class="pm-label">Modalidad</span><span class="pm-val">Desarrollo Grupal</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- s1c: INSTRUCCIONES -->
+<div class="slide" id="s1c">
+  <div class="slide-strip"><span class="strip-label">📋 Instrucciones</span><span class="strip-dcd">Antes de comenzar</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <p class="sec-title">¿Cómo responder la evaluación?</p>
+    <div class="instr-grid">
+      <div class="instr-item">
+        <span class="instr-icon">📚</span>
+        <span class="instr-title">COBERTURA</span>
+        <p class="instr-text">10 preguntas que abarcan los 7 módulos: Sol, Planetas Rocosos, Gigantes, Satélites, Cometas, Satélites Artificiales y Asteroides.</p>
+      </div>
+      <div class="instr-item">
+        <span class="instr-icon">☝️</span>
+        <span class="instr-title">UNA RESPUESTA</span>
+        <p class="instr-text">Cada pregunta tiene una sola respuesta correcta. Una vez seleccionada, no podrás cambiarla.</p>
+      </div>
+      <div class="instr-item">
+        <span class="instr-icon">✅</span>
+        <span class="instr-title">RETROALIMENTACIÓN</span>
+        <p class="instr-text">Al seleccionar una opción, recibirás retroalimentación inmediata y podrás avanzar a la siguiente pregunta.</p>
+      </div>
+      <div class="instr-item">
+        <span class="instr-icon">🏆</span>
+        <span class="instr-title">RESULTADOS</span>
+        <p class="instr-text">Al finalizar verás tu puntaje total y podrás intentarlo de nuevo si lo deseas.</p>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:10px">
+      <button class="checkpoint-cta" onclick="goSlide(2)" style="background:linear-gradient(135deg,var(--gold2),var(--gold));color:#020617">¡INICIAR PRUEBA →</button>
+    </div>
+  </div>
+</div>
+
+<!-- s2c: PREGUNTA 1 — Módulo T1: El Sol -->
+<div class="slide" id="s2c" data-answer="b">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 1 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T1 · El Sol y el Origen</span>
+    <p class="q-text">¿Cuál es el nombre de la capa visible del Sol desde la que emite su luz y calor hacia el espacio?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q1','a',this)"><span class="opt-l">A</span>Cromosfera.</div>
+      <div class="q-opt" onclick="qSelect('q1','b',this)"><span class="opt-l">B</span>Fotosfera.</div>
+      <div class="q-opt" onclick="qSelect('q1','c',this)"><span class="opt-l">C</span>Corona solar.</div>
+      <div class="q-opt" onclick="qSelect('q1','d',this)"><span class="opt-l">D</span>Zona de transición.</div>
+    </div>
+    <div class="q-fb" id="fb-q1">La <strong>fotosfera</strong> es la capa más externa visible del Sol, a ≈ 5 500 °C, desde donde se emite la luz que ilumina el Sistema Solar.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(3)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s3c: PREGUNTA 2 — Módulo T1: Origen del Sistema Solar -->
+<div class="slide" id="s3c" data-answer="a">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 2 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T1 · El Sol y el Origen</span>
+    <p class="q-text">¿Cuál es la teoría científica aceptada que explica el origen del Sistema Solar a partir de una nube de gas y polvo interestelar?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q2','a',this)"><span class="opt-l">A</span>Teoría Nebular (nebulosa solar).</div>
+      <div class="q-opt" onclick="qSelect('q2','b',this)"><span class="opt-l">B</span>Teoría del Big Bang.</div>
+      <div class="q-opt" onclick="qSelect('q2','c',this)"><span class="opt-l">C</span>Teoría Catastrófica del encuentro estelar.</div>
+      <div class="q-opt" onclick="qSelect('q2','d',this)"><span class="opt-l">D</span>Teoría de la Panspermia Cósmica.</div>
+    </div>
+    <div class="q-fb" id="fb-q2">La <strong>Teoría Nebular</strong> propone que el Sistema Solar se formó hace 4 600 millones de años a partir del colapso gravitacional de una nebulosa solar.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(4)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s4c: PREGUNTA 3 — Módulo T2: Planetas Rocosos (Mercurio) -->
+<div class="slide" id="s4c" data-answer="a">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 3 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T2 · Planetas Rocosos</span>
+    <p class="q-text">¿Por qué Mercurio experimenta temperaturas extremas, con diferencias de hasta 600 °C entre su lado diurno y nocturno?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q3','a',this)"><span class="opt-l">A</span>Porque carece de atmósfera que regule la temperatura.</div>
+      <div class="q-opt" onclick="qSelect('q3','b',this)"><span class="opt-l">B</span>Porque es el planeta más cercano al Sol.</div>
+      <div class="q-opt" onclick="qSelect('q3','c',this)"><span class="opt-l">C</span>Porque rota muy rápido sobre su propio eje.</div>
+      <div class="q-opt" onclick="qSelect('q3','d',this)"><span class="opt-l">D</span>Porque tiene una alta densidad central de hierro.</div>
+    </div>
+    <div class="q-fb" id="fb-q3">Sin <strong>atmósfera</strong>, Mercurio no puede retener el calor en la noche ni moderarlo durante el día, lo que genera esas variaciones térmicas extremas.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(5)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s5c: PREGUNTA 4 — Módulo T2: Planetas Rocosos (Venus) -->
+<div class="slide" id="s5c" data-answer="b">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 4 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T2 · Planetas Rocosos</span>
+    <p class="q-text">El efecto invernadero de Venus es tan extremo que su temperatura superficial supera los 460 °C. ¿Cuál es el principal gas responsable?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q4','a',this)"><span class="opt-l">A</span>Metano (CH₄).</div>
+      <div class="q-opt" onclick="qSelect('q4','b',this)"><span class="opt-l">B</span>Dióxido de carbono (CO₂).</div>
+      <div class="q-opt" onclick="qSelect('q4','c',this)"><span class="opt-l">C</span>Nitrógeno (N₂).</div>
+      <div class="q-opt" onclick="qSelect('q4','d',this)"><span class="opt-l">D</span>Vapor de agua (H₂O).</div>
+    </div>
+    <div class="q-fb" id="fb-q4">La atmósfera venusiana es 96,5 % <strong>CO₂</strong>, que atrapa el calor solar con tal eficiencia que la temperatura superficial supera la del plomo fundido.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(6)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s6c: PREGUNTA 5 — Módulo T3: Gigantes Gaseosos (Júpiter) -->
+<div class="slide" id="s6c" data-answer="c">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 5 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T3 · Gigantes Gaseosos y Helados</span>
+    <p class="q-text">¿Cuál es el planeta más grande del Sistema Solar, con una Gran Mancha Roja que es una tormenta mayor que la Tierra?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q5','a',this)"><span class="opt-l">A</span>Saturno.</div>
+      <div class="q-opt" onclick="qSelect('q5','b',this)"><span class="opt-l">B</span>Urano.</div>
+      <div class="q-opt" onclick="qSelect('q5','c',this)"><span class="opt-l">C</span>Júpiter.</div>
+      <div class="q-opt" onclick="qSelect('q5','d',this)"><span class="opt-l">D</span>Neptuno.</div>
+    </div>
+    <div class="q-fb" id="fb-q5"><strong>Júpiter</strong> es el gigante gaseoso más masivo, con más de 1 300 veces el volumen terrestre. Su Gran Mancha Roja es una tormenta anticiclónica que persiste hace siglos.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(7)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s7c: PREGUNTA 6 — Módulo T3: Planetas Helados (Urano) -->
+<div class="slide" id="s7c" data-answer="d">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 6 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T3 · Gigantes Gaseosos y Helados</span>
+    <p class="q-text">¿Cuál de los siguientes planetas se clasifica como "planeta helado" y tiene un eje de rotación inclinado casi 98°, por lo que rueda de lado?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q6','a',this)"><span class="opt-l">A</span>Saturno.</div>
+      <div class="q-opt" onclick="qSelect('q6','b',this)"><span class="opt-l">B</span>Júpiter.</div>
+      <div class="q-opt" onclick="qSelect('q6','c',this)"><span class="opt-l">C</span>Marte.</div>
+      <div class="q-opt" onclick="qSelect('q6','d',this)"><span class="opt-l">D</span>Urano.</div>
+    </div>
+    <div class="q-fb" id="fb-q6"><strong>Urano</strong> es un planeta helado con un eje axial inclinado 97,77°, lo que significa que orbita al Sol esencialmente "acostado de lado", causando estaciones extremas de 42 años.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(8)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s8c: PREGUNTA 7 — Módulo T4: Satélites Naturales (Luna) -->
+<div class="slide" id="s8c" data-answer="c">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 7 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T4 · Satélites Naturales</span>
+    <p class="q-text">¿Cuál es la teoría más aceptada sobre el origen de la Luna, satélite natural de la Tierra?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q7','a',this)"><span class="opt-l">A</span>Se formó al mismo tiempo que la Tierra a partir de la misma nube de gas.</div>
+      <div class="q-opt" onclick="qSelect('q7','b',this)"><span class="opt-l">B</span>Fue capturada gravitacionalmente del cinturón de asteroides.</div>
+      <div class="q-opt" onclick="qSelect('q7','c',this)"><span class="opt-l">C</span>Se formó tras el impacto de un protoplaneta (Theia) con la Tierra primitiva.</div>
+      <div class="q-opt" onclick="qSelect('q7','d',this)"><span class="opt-l">D</span>Es un planeta que quedó atrapado en la órbita terrestre.</div>
+    </div>
+    <div class="q-fb" id="fb-q7">La <strong>Teoría del Gran Impacto</strong> propone que hace ~4 500 Ma, el protoplaneta <em>Theia</em> chocó con la Tierra joven; los escombros orbitantes se acretaron y formaron la Luna.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(9)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s9c: PREGUNTA 8 — Módulo T5: Los Cometas -->
+<div class="slide" id="s9c" data-answer="c">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 8 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T5 · Los Cometas</span>
+    <p class="q-text">¿De qué materiales están compuestos principalmente los cometas, llamados a veces "bolas de nieve sucia"?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q8','a',this)"><span class="opt-l">A</span>Rocas densas y metales pesados.</div>
+      <div class="q-opt" onclick="qSelect('q8','b',this)"><span class="opt-l">B</span>Gas plasma y polvo metálico.</div>
+      <div class="q-opt" onclick="qSelect('q8','c',this)"><span class="opt-l">C</span>Hielo (agua, CO₂, NH₃), polvo y material orgánico.</div>
+      <div class="q-opt" onclick="qSelect('q8','d',this)"><span class="opt-l">D</span>Silicatos y carbono puro cristalizado.</div>
+    </div>
+    <div class="q-fb" id="fb-q8">El núcleo cometario es una mezcla de <strong>hielo</strong> (agua, CO₂, metano) con polvo y compuestos orgánicos. Al acercarse al Sol, los hielos subliman y forman la coma y las colas.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(10)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s10c: PREGUNTA 9 — Módulo T6: Satélites Artificiales -->
+<div class="slide" id="s10c" data-answer="a">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 9 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T6 · Satélites Artificiales</span>
+    <p class="q-text">¿En qué año fue lanzado el <em>Sputnik 1</em>, el primer satélite artificial de la historia, iniciando la era espacial?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q9','a',this)"><span class="opt-l">A</span>1957.</div>
+      <div class="q-opt" onclick="qSelect('q9','b',this)"><span class="opt-l">B</span>1969.</div>
+      <div class="q-opt" onclick="qSelect('q9','c',this)"><span class="opt-l">C</span>1972.</div>
+      <div class="q-opt" onclick="qSelect('q9','d',this)"><span class="opt-l">D</span>1945.</div>
+    </div>
+    <div class="q-fb" id="fb-q9">El <strong>Sputnik 1</strong> fue lanzado por la Unión Soviética el 4 de octubre de <strong>1957</strong>, convirtiéndose en el primer objeto fabricado por humanos en orbitar la Tierra.</div>
+    <button class="checkpoint-cta q-next" onclick="goSlide(11)" style="display:none">Siguiente pregunta →</button>
+  </div>
+</div>
+
+<!-- s11c: PREGUNTA 10 — Módulo T7: Asteroides -->
+<div class="slide" id="s11c" data-answer="c">
+  <div class="slide-strip"><span class="strip-label">📝 Pregunta 10 de 10</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="justify-content:center">
+    <span class="q-module-tag">T7 · Vecinos en el Cosmos</span>
+    <p class="q-text">¿Dónde se concentra la mayor cantidad de asteroides del Sistema Solar, separando el reino de los planetas rocosos del de los gigantes gaseosos?</p>
+    <div class="q-opts">
+      <div class="q-opt" onclick="qSelect('q10','a',this)"><span class="opt-l">A</span>En el Cinturón de Kuiper, más allá de Neptuno.</div>
+      <div class="q-opt" onclick="qSelect('q10','b',this)"><span class="opt-l">B</span>En la Nube de Oort, al límite del Sistema Solar.</div>
+      <div class="q-opt" onclick="qSelect('q10','c',this)"><span class="opt-l">C</span>En el Cinturón de Asteroides, entre las órbitas de Marte y Júpiter.</div>
+      <div class="q-opt" onclick="qSelect('q10','d',this)"><span class="opt-l">D</span>En la órbita de Neptuno, formando anillos planetarios.</div>
+    </div>
+    <div class="q-fb" id="fb-q10">El <strong>Cinturón Principal de Asteroides</strong>, entre Marte y Júpiter, alberga millones de cuerpos rocosos. La influencia gravitacional de Júpiter impidió que se consolidaran en un planeta.</div>
+    <button class="checkpoint-cta q-next" onclick="showScore()" style="display:none;background:linear-gradient(135deg,var(--gold2),var(--gold));color:#020617">Ver Resultados 🏆</button>
+  </div>
+</div>
+
+<!-- s12c: RESULTADOS -->
+<div class="slide" id="s12c">
+  <div class="slide-strip"><span class="strip-label">🏆 Resultados</span><span class="strip-dcd">Evaluación Integradora</span></div>
+  <div class="slide-body" style="align-items:center;text-align:center;justify-content:center;gap:20px">
+    <p class="sec-title" style="justify-content:center">Tu Puntaje Final</p>
+    <div class="score-container">
+      <div class="score-ring-wrap" id="score-ring">
+        <span class="score-num" id="score-n">–</span>
+        <span class="score-denom">DE 10</span>
+      </div>
+      <p class="score-msg" id="score-msg"></p>
+    </div>
+    <div class="score-breakdown">
+      <div class="score-cell"><span class="mod-label">T1</span><span class="mod-name">El Sol y el Origen</span></div>
+      <div class="score-cell"><span class="mod-label">T2</span><span class="mod-name">Planetas Rocosos</span></div>
+      <div class="score-cell"><span class="mod-label">T3</span><span class="mod-name">Gigantes Gaseosos y Helados</span></div>
+      <div class="score-cell"><span class="mod-label">T4</span><span class="mod-name">Satélites Naturales</span></div>
+      <div class="score-cell"><span class="mod-label">T5</span><span class="mod-name">Los Cometas</span></div>
+      <div class="score-cell"><span class="mod-label">T6</span><span class="mod-name">Satélites Artificiales</span></div>
+      <div class="score-cell"><span class="mod-label">T7</span><span class="mod-name">Vecinos en el Cosmos</span></div>
+    </div>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px">
+      <button class="checkpoint-cta" onclick="retryQuiz()" style="background:rgba(255,255,255,.07);border:1px solid var(--border)">↺ Reintentar Prueba</button>
+      <a href="Índice.html" class="checkpoint-cta" style="background:linear-gradient(135deg,var(--gold2),var(--gold));color:#020617;text-decoration:none">🏠 Volver al Índice</a>
+    </div>
+  </div>
+</div>
+
+</div><!-- /deck -->
+
+<nav id="nav" role="navigation">
+  <a href="Índice.html" class="nav-btn" title="Volver al Índice" style="padding:6px 12px">🏠 ÍNDICE</a>
+  <div class="nav-center">
+    <div class="nav-progress"><div class="nav-bar-fill" id="nav-fill" style="width:8%"></div></div>
+    <div class="nav-info">
+      <span class="nav-chapter" id="nav-chapter">PORTADA</span>
+      <span style="color:var(--dim)">|</span>
+      <span class="nav-count" id="nav-count">1 / 13</span>
+    </div>
+  </div>
+  <button class="nav-btn" id="nav-next" onclick="nextSlide()" style="background:var(--gold);color:#020617;border-color:var(--gold)">SIGUIENTE &#8594;</button>
+</nav>
+
+<script>
+/* ── STARS ── */
+document.addEventListener("DOMContentLoaded", () => {
+  const canvas = document.getElementById("star-canvas");
+  const ctx = canvas.getContext("2d");
+  function resize(){ canvas.width=window.innerWidth; canvas.height=window.innerHeight; drawStars(); }
+  function drawStars(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(let i=0;i<180;i++){
+      ctx.fillStyle=`rgba(255,255,255,${Math.random()*.9+.1})`;
+      ctx.beginPath();
+      ctx.arc(Math.random()*canvas.width,Math.random()*canvas.height,Math.random()*1.5,0,Math.PI*2);
+      ctx.fill();
+    }
+  }
+  window.addEventListener("resize",resize); resize();
+});
+
+/* ── SLIDE ENGINE ── */
+const TOTAL = 13;
+let cur = 0;
+const slides = Array.from(document.querySelectorAll('.slide'));
+const CHAPTERS = [
+  'PORTADA','INSTRUCCIONES',
+  'PREGUNTA 1','PREGUNTA 2','PREGUNTA 3','PREGUNTA 4','PREGUNTA 5',
+  'PREGUNTA 6','PREGUNTA 7','PREGUNTA 8','PREGUNTA 9','PREGUNTA 10',
+  'RESULTADOS'
+];
+
+function goSlide(n){
+  if(n<0||n>=TOTAL) return;
+  slides[cur].classList.remove('active','exit-l','enter-l');
+  slides[cur].classList.add(n>cur?'exit-l':'enter-l');
+  setTimeout(()=>slides[cur].classList.remove('exit-l','enter-l'),450);
+  cur=n; slides[cur].classList.add('active');
+  updateNav();
+}
+function nextSlide(){ goSlide(cur+1); }
+function prevSlide(){ goSlide(cur-1); }
+
+function updateNav(){
+  const nextBtn = document.getElementById('nav-next');
+  /* On question slides (s2c–s11c = indices 2–11) hide the next button;
+     navigation is handled by the q-next button inside each question. */
+  const isQuestionSlide = cur >= 2 && cur <= 11;
+  nextBtn.style.display = isQuestionSlide ? 'none' : 'flex';
+  if(cur === TOTAL-1) nextBtn.style.display = 'none';
+
+  document.getElementById('nav-count').textContent = `${cur+1} / ${TOTAL}`;
+  document.getElementById('nav-chapter').textContent = CHAPTERS[cur];
+  document.getElementById('nav-fill').style.width = ((cur+1)/TOTAL*100)+'%';
+}
+
+/* ── QUIZ ENGINE ── */
+let qScore = 0;
+
+function qSelect(qid, opt, el){
+  const slide = el.closest('.slide');
+  if(slide.dataset.done) return;
+  slide.dataset.done = '1';
+  const correct = slide.dataset.answer;
+  slide.querySelectorAll('.q-opt').forEach(o => {
+    o.classList.add('disabled');
+    if(o.querySelector('.opt-l').textContent.toLowerCase() === correct) o.classList.add('correct');
+  });
+  if(opt === correct){ qScore++; el.classList.add('correct'); } else { el.classList.add('wrong'); }
+  slide.querySelector('.q-fb').style.display = 'block';
+  slide.querySelector('.q-next').style.display = 'block';
+}
+
+function showScore(){
+  document.getElementById('score-n').textContent = qScore;
+  let msg, color;
+  if(qScore === 10){
+    msg = '¡Perfecto! Dominas todo el Sistema Solar. ¡Excelente trabajo!';
+    color = 'var(--teal)';
+  } else if(qScore >= 8){
+    msg = '¡Muy bien! Tienes un sólido conocimiento del Sistema Solar.';
+    color = 'var(--gold)';
+  } else if(qScore >= 6){
+    msg = 'Buen trabajo. Repasa los módulos en los que fallaste para reforzar.';
+    color = 'var(--blue)';
+  } else {
+    msg = 'Necesitas repasar los módulos del REDA. ¡Puedes mejorar!';
+    color = 'var(--coral)';
+  }
+  document.getElementById('score-msg').textContent = msg;
+  document.getElementById('score-ring').style.background =
+    `conic-gradient(${color} ${qScore/10*360}deg, rgba(255,255,255,.05) 0deg)`;
+  goSlide(12);
+}
+
+function retryQuiz(){
+  qScore = 0;
+  /* Reset question slides: indices 2–11 */
+  for(let i=2; i<=11; i++){
+    const sl = slides[i];
+    delete sl.dataset.done;
+    sl.querySelectorAll('.q-opt').forEach(o => o.className = 'q-opt');
+    sl.querySelector('.q-fb').style.display = 'none';
+    sl.querySelector('.q-next').style.display = 'none';
+  }
+  goSlide(2);
+}
+
+updateNav();
+</script>
+</body>
+</html>

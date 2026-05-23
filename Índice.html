@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>RED Sistema Solar | Inicio - UNL 2026</title>
+<meta name="DC.title" content="Explorando el Sistema Solar - Portada General">
+<meta name="DC.creator" content="Juan Diego Medina Villamagua">
+<meta name="DC.description" content="Recurso Educativo Digital interactivo bajo el modelo ADDIE para Ciencias Naturales.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;800&family=Orbitron:wght@400;600;700;900&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060b18; --bg2:#0a1020; --bg3:#0d1530;
+  --gold:#F5C842; --gold2:#d4a500; --goldf:rgba(245,200,66,0.08);
+  --blue:#4DA6FF; --blue2:#1a5fa8; --bluef:rgba(77,166,255,0.08);
+  --teal:#1DB87A; --tealf:rgba(29,184,122,0.08);
+  --coral:#E24B4A;
+  --white:#EFF3FF; --muted:#7a8fb5; --dim:#3a4a6b;
+  --card:rgba(10,16,32,0.85);
+  --border:rgba(77,166,255,0.15);
+  --fhead:Orbitron,sans-serif;
+  --fbody:"Exo 2",sans-serif;
+  --r:10px; --r2:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:var(--fbody);color:var(--white);display:flex;flex-direction:column}
+
+/* ── STARS CANVAS ── */
+#star-canvas{position:fixed;inset:0;pointer-events:none;z-index:0}
+
+/* ── LAYOUT ── */
+#deck{position:relative;flex:1;overflow:hidden;z-index:1}
+.slide{
+  position:absolute;inset:0;
+  opacity:0;pointer-events:none;
+  transition:opacity .45s ease,transform .45s ease;
+  transform:translateX(60px);
+  display:flex;flex-direction:column;
+}
+.slide.active{opacity:1;pointer-events:auto;transform:translateX(0)}
+.slide.exit-l{opacity:0;transform:translateX(-60px)}
+.slide.enter-r{opacity:0;transform:translateX(60px)}
+.slide.enter-l{opacity:0;transform:translateX(-60px)}
+
+/* ── NAVIGATION BAR ── */
+#nav{
+  flex-shrink:0;height:54px;background:rgba(6,11,24,0.95);
+  border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;z-index:10;backdrop-filter:blur(8px);
+}
+.nav-btn{
+  background:transparent;border:1px solid var(--border);color:var(--muted);
+  font-family:var(--fhead);font-size:.65rem;letter-spacing:1.5px;
+  padding:7px 18px;border-radius:var(--r2);cursor:pointer;
+  transition:all .2s;display:flex;align-items:center;gap:6px;
+}
+.nav-btn:hover:not(:disabled){color:var(--white);border-color:var(--blue);background:var(--bluef)}
+.nav-btn:disabled{opacity:.3;cursor:default}
+.nav-center{display:flex;flex-direction:column;align-items:center;gap:5px}
+.nav-progress{width:220px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden}
+.nav-bar-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--blue));border-radius:2px;transition:width .4s ease}
+.nav-info{display:flex;align-items:center;gap:10px;font-size:.75rem;color:var(--muted)}
+.nav-chapter{font-family:var(--fhead);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold)}
+.nav-count{font-family:var(--fhead);font-size:.7rem;color:var(--muted)}
+
+/* ── SLIDE HEADER STRIP ── */
+.slide-strip{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 32px;border-bottom:1px solid var(--border);
+  background:rgba(6,11,24,0.6);backdrop-filter:blur(4px);flex-shrink:0;
+}
+.strip-label{font-family:var(--fhead);font-size:.6rem;letter-spacing:2.5px;text-transform:uppercase;color:var(--gold)}
+.strip-dcd{font-size:.7rem;color:var(--muted)}
+
+/* ── SLIDE BODY ── */
+.slide-body{flex:1;overflow-y:auto;overflow-x:hidden;padding:26px 42px;display:flex;flex-direction:column;gap:18px}
+.slide-body::-webkit-scrollbar{width:4px}
+.slide-body::-webkit-scrollbar-thumb{background:var(--dim);border-radius:2px}
+
+/* ── PREMIUM COVER ── */
+.premium-cover { position: absolute; inset: 0; background-color: #020617; display: flex; flex-direction: column; justify-content: center; align-items: center; overflow: hidden; font-family: var(--fbody); }
+.premium-bg-gradient { position: absolute; inset: 0; background: radial-gradient(circle at 20% 30%, rgba(56, 189, 248, 0.15) 0%, transparent 40%), radial-gradient(circle at 80% 70%, rgba(251, 191, 36, 0.1) 0%, transparent 40%); z-index: 0; }
+.premium-nebula { position:absolute;top:-30%;right:-10%; width:60%;height:130%; background:radial-gradient(ellipse at 60% 50%,rgba(77,166,255,.12) 0%,rgba(245,200,66,.06) 40%,transparent 70%); pointer-events:none;z-index:1; animation:nebula-drift 8s ease-in-out infinite alternate; }
+@keyframes nebula-drift{from{transform:scale(1) rotate(-2deg)}to{transform:scale(1.08) rotate(2deg)}}
+.premium-content { z-index: 10; text-align: center; max-width: 1000px; padding: 0 20px; }
+.premium-pre { font-family: 'Plus Jakarta Sans', sans-serif; text-transform: uppercase; letter-spacing: 6px; color: #38bdf8; font-size: 0.75rem; margin-bottom: 20px; }
+.premium-title { font-family: 'Plus Jakarta Sans', sans-serif; font-size: clamp(2.5rem, 6vw, 4.5rem); font-weight: 800; line-height: 1.05; margin-bottom: 20px; background: linear-gradient(to bottom, #ffffff 30%, #94a3b8); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+.premium-sub { font-size: 1rem; font-weight: 300; color: #94a3b8; margin-bottom: 40px; }
+.premium-cta { background: #ffffff; color: #020617; padding: 15px 35px; border-radius: 50px; font-family: 'Plus Jakarta Sans', sans-serif; font-weight: 800; font-size: 0.9rem; border: none; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+.premium-cta:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(255,255,255,0.2); }
+.premium-meta { position: absolute; bottom: 30px; display: flex; gap: 40px; z-index: 10; flex-wrap: wrap; justify-content: center; }
+.pm-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+.pm-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: #64748b; }
+.pm-val { font-size: 0.85rem; color: #f1f5f9; font-weight: 600; }
+
+/* ── COMPONENTS ── */
+.sec-title{font-family:var(--fhead);font-size:1rem;font-weight:700;color:var(--gold); letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.sec-title::after{content:"";flex:1;height:1px;background:var(--border)}
+.info-card{background:rgba(10,16,32,.82);border:1px solid var(--border);border-radius:var(--r); padding:20px;backdrop-filter:blur(6px)}
+.info-card h3{font-family:var(--fhead);font-size:.75rem;letter-spacing:1.5px;color:var(--blue); text-transform:uppercase;margin-bottom:10px}
+.pd-table{width:100%;border-collapse:collapse;font-size:.88rem;margin:12px 0}
+.pd-table td{padding:10px 14px;border-bottom:1px solid rgba(255,255,255,.05)}
+.pd-table td:first-child{color:var(--gold);width:30%;font-weight:600; font-family:var(--fhead); font-size:.75rem; letter-spacing:1px;}
+.pd-table tr:last-child td{border-bottom:none}
+
+/* ── MENU GRID (LAUNCHPAD) ── */
+.module-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(230px, 1fr)); gap:16px; margin-top:5px; }
+.module-card {
+  background:linear-gradient(135deg, rgba(10,16,32,.9), rgba(13,21,48,.95));
+  border:1px solid var(--border); border-radius:var(--r); padding:18px;
+  display:flex; flex-direction:column; justify-content:space-between;
+  transition:all 0.3s ease; cursor:pointer; text-decoration:none; position:relative; overflow:hidden;
+}
+.module-card::before {
+  content:''; position:absolute; top:0; left:0; width:4px; height:100%;
+  background:var(--blue); transition:width 0.3s ease; opacity:0.8;
+}
+.module-card:hover { transform:translateY(-5px); border-color:var(--blue); box-shadow:0 10px 30px rgba(0,0,0,0.4); }
+.module-card:hover::before { width:100%; opacity:0.05; }
+.module-tag { font-family:var(--fhead); font-size:.6rem; color:var(--muted); letter-spacing:2px; margin-bottom:6px; display:block; }
+.module-title { font-family:var(--fhead); font-size:.95rem; color:var(--white); margin-bottom:6px; line-height:1.2; }
+.module-author { font-size:.75rem; color:var(--gold); font-style:italic; margin-bottom:14px; }
+.module-cta { 
+  display:inline-block; padding:8px 12px; background:rgba(255,255,255,.05); 
+  border:1px solid var(--border); border-radius:var(--r2); color:var(--white);
+  font-family:var(--fhead); font-size:.65rem; letter-spacing:1px; text-transform:uppercase; text-align:center;
+}
+.module-card:hover .module-cta { background:var(--blue); border-color:var(--blue); color:#fff; }
+
+/* Casos especiales en el Grid */
+.card-t3::before { background:var(--teal); }
+.card-t3:hover { border-color:var(--teal); }
+.card-t3:hover .module-cta { background:var(--teal); border-color:var(--teal); }
+.card-t3 .module-tag { color:var(--teal); }
+
+.card-int { grid-column:1 / -1; background:linear-gradient(135deg, rgba(245,200,66,.1), rgba(10,16,32,.95)); border-color:rgba(245,200,66,.3); align-items:center; text-align:center; padding:16px;}
+.card-int::before { background:var(--gold); width:100%; height:4px; }
+.card-int:hover { border-color:var(--gold); }
+.card-int:hover .module-cta { background:var(--gold); color:#000; border-color:var(--gold); }
+.card-int .module-title { font-size:1.2rem; color:var(--gold); margin-bottom:4px;}
+.card-int .module-author { margin-bottom:10px; }
+</style>
+</head>
+<body>
+<canvas id="star-canvas"></canvas>
+
+<div id="deck" role="main">
+
+<div class="slide active" id="s0c">
+  <div class="premium-cover">
+      <div class="premium-bg-gradient"></div>
+      <div class="premium-nebula"></div>
+      <div class="premium-content">
+          <p class="premium-pre">Recurso Educativo Digital</p>
+          <h1 class="premium-title">EXPLORANDO EL<br>SISTEMA SOLAR</h1>
+          <p class="premium-sub" style="color:var(--gold)">Un viaje interactivo por nuestro vecindario cósmico</p>
+          <button class="premium-cta" onclick="goSlide(1)">VER PROYECTO →</button>
+      </div>
+      <div class="premium-meta">
+          <div class="pm-item"><span class="pm-label">Institución</span><span class="pm-val">Universidad Nacional de Loja</span></div>
+          <div class="pm-item"><span class="pm-label">Metodología</span><span class="pm-val">ADDIE & ERCA</span></div>
+          <div class="pm-item"><span class="pm-label">Año</span><span class="pm-val">2026</span></div>
+      </div>
+  </div>
+</div>
+
+<div class="slide" id="s1c">
+  <div class="slide-strip"><span class="strip-label">📋 Ficha Técnica</span><span class="strip-dcd">Datos Académicos</span></div>
+  <div class="slide-body" style="justify-content:center;">
+    <p class="sec-title">Información del Proyecto Grupal</p>
+    <div class="info-card" style="padding:30px;">
+      <table class="pd-table">
+        <tr><td>INSTITUCIÓN</td><td>Universidad Nacional de Loja (UNL)</td></tr>
+        <tr><td>FACULTAD</td><td>Educación, el Arte y la Comunicación</td></tr>
+        <tr><td>CARRERA</td><td>Pedagogía de las Ciencias Experimentales - Informática</td></tr>
+        <tr><td>ASIGNATURA</td><td>Análisis y Diseño de Recursos Educativos</td></tr>
+        <tr><td>DOCENTE</td><td>Lic. Marlon Alexander Maldonado González, Mg. Sc.</td></tr>
+        <tr><td>PÚBLICO OBJETIVO</td><td>Estudiantes de EGB Superior (12 - 16 años)</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s2c">
+  <div class="slide-strip"><span class="strip-label">🎯 Fundamento</span><span class="strip-dcd">Ministerio de Educación</span></div>
+  <div class="slide-body">
+    <p class="sec-title">Alineación Curricular y Objetivos</p>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
+      <div class="info-card">
+        <h3 style="color:var(--gold)">DESTREZA (DCD CN.4.4.3)</h3>
+        <p style="font-size:.85rem; line-height:1.6">Observar, con uso de las TIC y otros recursos, y explicar la apariencia general de los planetas, satélites, cometas y asteroides, y elaborar modelos representativos del Sistema Solar.</p>
+      </div>
+      <div class="info-card">
+        <h3 style="color:var(--teal)">INDICADOR (I.CN.4.12.1)</h3>
+        <p style="font-size:.85rem; line-height:1.6">Diferencia los componentes del Universo de acuerdo con su estructura y origen, con uso de diversas fuentes de indagación científica y tecnológica.</p>
+      </div>
+      <div class="info-card" style="grid-column:1 / -1; border-color:var(--blue); background:rgba(77,166,255,.05); padding:16px;">
+        <h3 style="color:var(--blue); text-align:center; margin-bottom:10px;">OBJETIVO EDUCATIVO</h3>
+        <p style="text-align:center; font-size:.95rem; line-height:1.6">Diferenciar la apariencia general de planetas, satélites, cometas y asteroides mediante la interacción con simuladores y recursos HTML5, identificando características físicas y posicionándolos en un modelo a escala relativa.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s3c">
+  <div class="slide-strip"><span class="strip-label">⚙️ Desarrollo</span><span class="strip-dcd">Diseño Instruccional</span></div>
+  <div class="slide-body" style="justify-content:center; text-align:center;">
+    <p class="sec-title" style="justify-content:center;">Metodología ADDIE y Ciclo ERCA</p>
+    <p style="margin-bottom:20px; font-size:.9rem; color:var(--muted); max-width:800px; margin-left:auto; margin-right:auto;">
+      La secuencia didáctica de este REDA se fundamenta en la <strong>Taxonomía Digital de Bloom</strong> y el ciclo de aprendizaje <strong>ERCA</strong> (Experiencia, Reflexión, Conceptualización y Aplicación). Los 7 módulos interactivos promueven el aprendizaje progresivo y microaprendizaje.
+    </p>
+    
+    <div style="display:flex; justify-content:space-between; align-items:center; padding:20px; background:var(--card); border-radius:var(--r); border:1px solid var(--border);">
+      <div style="flex:1;"><strong style="color:var(--blue); font-family:var(--fhead)">Análisis</strong><br><span style="font-size:.7rem">Detección de necesidades</span></div>
+      <div style="color:var(--dim)">→</div>
+      <div style="flex:1;"><strong style="color:var(--gold); font-family:var(--fhead)">Diseño</strong><br><span style="font-size:.7rem">Estructuración y ERCA</span></div>
+      <div style="color:var(--dim)">→</div>
+      <div style="flex:1;"><strong style="color:var(--teal); font-family:var(--fhead)">Desarrollo</strong><br><span style="font-size:.7rem">HTML5 / Interacciones</span></div>
+      <div style="color:var(--dim)">→</div>
+      <div style="flex:1;"><strong style="color:var(--coral); font-family:var(--fhead)">Implementación</strong><br><span style="font-size:.7rem">Despliegue Educativo</span></div>
+      <div style="color:var(--dim)">→</div>
+      <div style="flex:1;"><strong style="color:#a855f7; font-family:var(--fhead)">Evaluación</strong><br><span style="font-size:.7rem">Formativa y Sumativa</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" id="s4c">
+  <div class="slide-strip"><span class="strip-label">🚀 Launchpad</span><span class="strip-dcd">Selecciona tu destino</span></div>
+  <div class="slide-body">
+    <p class="sec-title">Los 7 Módulos de Aprendizaje</p>
+    
+    <div class="module-grid">
+      <a href="t1-sol.html" class="module-card">
+        <div>
+          <span class="module-tag">MÓDULO T1</span>
+          <h3 class="module-title">El Sol y el Origen</h3>
+          <p class="module-author">Juan Regalado</p>
+        </div>
+        <span class="module-cta">Iniciar Módulo →</span>
+      </a>
+
+      <a href="t2-rocosos.html" class="module-card">
+        <div>
+          <span class="module-tag">MÓDULO T2</span>
+          <h3 class="module-title">Planetas Rocosos</h3>
+          <p class="module-author">Odalis Montesdeoca</p>
+        </div>
+        <span class="module-cta">Iniciar Módulo →</span>
+      </a>
+
+      <a href="t3-gigantes.html" class="module-card card-t3">
+        <div>
+          <span class="module-tag">MÓDULO T3</span>
+          <h3 class="module-title">Gigantes Gaseosos y Helados</h3>
+          <p class="module-author">Juan Diego Medina</p>
+        </div>
+        <span class="module-cta">Iniciar Módulo →</span>
+      </a>
+
+      <a href="t4-satélites.html" class="module-card">
+        <div>
+          <span class="module-tag">MÓDULO T4</span>
+          <h3 class="module-title">Satélites Naturales</h3>
+          <p class="module-author">Jampyer Malla</p>
+        </div>
+        <span class="module-cta">Iniciar Módulo →</span>
+      </a>
+
+      <a href="t5-cometas.html" class="module-card">
+        <div>
+          <span class="module-tag">MÓDULO T5</span>
+          <h3 class="module-title">Los Cometas</h3>
+          <p class="module-author">Santiago Ordóñez</p>
+        </div>
+        <span class="module-cta">Iniciar Módulo →</span>
+      </a>
+
+      <a href="t6-satelites-art.html" class="module-card">
+        <div>
+          <span class="module-tag">MÓDULO T6</span>
+          <h3 class="module-title">Satélites Artificiales</h3>
+          <p class="module-author">Elkin Maza</p>
+        </div>
+        <span class="module-cta">Iniciar Módulo →</span>
+      </a>
+
+      <a href="t7-asteroides.html" class="module-card">
+        <div>
+          <span class="module-tag">MÓDULO T7</span>
+          <h3 class="module-title">Vecinos en el Cosmos</h3>
+          <p class="module-author">Joel Calderón</p>
+        </div>
+        <span class="module-cta">Iniciar Módulo →</span>
+      </a>
+
+      <a href="evaluacion.html" class="module-card card-int">
+        <div>
+          <span class="module-tag" style="color:var(--gold)">FASE FINAL</span>
+          <h3 class="module-title">Evaluación Integradora</h3>
+          <p class="module-author" style="color:var(--white); opacity:0.8;">Desarrollo Grupal</p>
+        </div>
+        <span class="module-cta">Comenzar Prueba →</span>
+      </a>
+    </div>
+
+  </div>
+</div>
+
+</div><nav id="nav" role="navigation">
+  <button class="nav-btn" id="nav-prev" onclick="prevSlide()" disabled>&#8592; ANTERIOR</button>
+  <div class="nav-center">
+    <div class="nav-progress"><div class="nav-bar-fill" id="nav-fill" style="width:5%"></div></div>
+    <div class="nav-info">
+      <span class="nav-chapter" id="nav-chapter">PORTADA</span>
+      <span style="color:var(--dim)">|</span>
+      <span class="nav-count" id="nav-count">1 / 5</span>
+    </div>
+  </div>
+  <button class="nav-btn" id="nav-next" onclick="nextSlide()" style="background:var(--blue); color:#fff; border-color:var(--blue)">SIGUIENTE &#8594;</button>
+</nav>
+
+<script>
+/* ── STARS GENERATOR ── */
+document.addEventListener("DOMContentLoaded", () => {
+    const canvas = document.getElementById("star-canvas");
+    const ctx = canvas.getContext("2d");
+    function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; drawStars(); }
+    function drawStars() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for(let i=0; i<150; i++) {
+            ctx.fillStyle = `rgba(255, 255, 255, ${Math.random()})`;
+            ctx.beginPath();
+            ctx.arc(Math.random() * canvas.width, Math.random() * canvas.height, Math.random() * 1.5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+    window.addEventListener("resize", resize); resize();
+});
+
+/* ── SLIDE ENGINE ── */
+const TOTAL = 5;
+let cur = 0;
+const slides = Array.from(document.querySelectorAll('.slide'));
+const CHAPTERS = ['PORTADA', 'DATOS ACADÉMICOS', 'ALINEACIÓN CURRICULAR', 'MODELO ADDIE & ERCA', 'MENÚ PRINCIPAL'];
+
+function goSlide(n) {
+  if(n < 0 || n >= TOTAL) return;
+  slides[cur].classList.remove('active', 'exit-l', 'enter-l');
+  slides[cur].classList.add(n > cur ? 'exit-l' : 'enter-l');
+  setTimeout(() => slides[cur].classList.remove('exit-l','enter-l'), 450);
+  cur = n;
+  slides[cur].classList.add('active');
+  updateNav();
+}
+function nextSlide() { goSlide(cur + 1); }
+function prevSlide() { goSlide(cur - 1); }
+
+function updateNav() {
+  document.getElementById('nav-prev').disabled = cur === 0;
+  
+  const nextBtn = document.getElementById('nav-next');
+  if(cur === TOTAL - 1) {
+    nextBtn.style.display = 'none';
+  } else {
+    nextBtn.style.display = 'flex';
+  }
+
+  document.getElementById('nav-count').textContent = `${cur+1} / ${TOTAL}`;
+  document.getElementById('nav-chapter').textContent = CHAPTERS[cur];
+  document.getElementById('nav-fill').style.width = ((cur+1)/TOTAL*100) + '%';
+}
+
+updateNav();
+</script>
+</body>
+</html>
