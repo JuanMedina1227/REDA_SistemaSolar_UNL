@@ -221,6 +221,7 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
           <h1 class="premium-title" style="background:linear-gradient(to bottom, #ffffff 30%, #4DA6FF); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;">VECINOS EN EL COSMOS</h1>
           <p class="premium-sub">Asteroides, Meteoroides, Meteoros y Meteoritos</p>
           <button class="premium-cta" onclick="goSlide(1)">INICIAR MÓDULO →</button>
+          <p style="font-style:italic;color:rgba(245,200,66,0.9);text-align:center;font-size:1rem;margin-top:20px;max-width:640px;line-height:1.6">"Hace 66 millones de años, un asteroide de 10 km cambió toda la vida en la Tierra. Hoy la NASA rastrea más de 2 000 asteroides potencialmente peligrosos."</p>
       </div>
       <div class="premium-meta">
           <div class="pm-item"><span class="pm-label">Módulo</span><span class="pm-val">Astronomía</span></div>
@@ -234,9 +235,16 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
   <div class="slide-strip"><span class="strip-label">📋 Objetivos</span><span class="strip-dcd">Ciencias Naturales</span></div>
   <div class="slide-body" style="justify-content:center;height:100%">
     <div>
+      <p style="font-size:1.1rem;color:#FFD700;margin-bottom:18px;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.12);line-height:1.6">🤔 ¿Qué pasaría si un asteroide chocara con la Tierra hoy?</p>
       <p class="sec-title">Objetivo de aprendizaje</p>
       <div style="background:linear-gradient(135deg,rgba(245,200,66,.07),rgba(77,166,255,.06));border:1px solid rgba(245,200,66,.25);border-left:4px solid var(--gold);padding:28px 32px;font-size:1.05rem;line-height:1.9;text-align:center;border-radius:0 var(--r) var(--r) 0">
         <strong class="text-gold">Describir</strong> las características de los cuerpos menores del Sistema Solar e <strong class="text-blue">identificar</strong> las diferencias clave entre asteroides, meteoroides, meteoros y meteoritos según su tamaño y ubicación respecto a la atmósfera terrestre.
+      </div>
+      <div style="margin-top:18px">
+        <p style="font-family:var(--fhead);font-size:.6rem;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:8px">🎬 VIDEO INTRODUCTORIO · NASA</p>
+        <div style="position:relative;padding-bottom:56.25%;height:0;overflow:hidden;max-width:560px;margin:0 auto;border-radius:8px;">
+          <iframe src="https://www.youtube.com/embed/Ihi8I-bGMxY?rel=0&modestbranding=1" style="position:absolute;top:0;left:0;width:100%;height:100%;border:0;" loading="lazy" title="Asteroides y cuerpos menores del Sistema Solar — NASA" allowfullscreen></iframe>
+        </div>
       </div>
     </div>
   </div>
@@ -290,6 +298,7 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
       <div class="checkpoint-feedback" id="fb-gk1">Selecciona una opción para avanzar.</div>
       <button class="checkpoint-cta" id="btn-gk1" onclick="checkGK('gk1', 'c', '¡Correcto! La inmensa gravedad de Júpiter impidió que estas rocas se unieran para formar un planeta.')" disabled>Comprobar</button>
     </div>
+    <div style="background:rgba(255,215,0,0.12);border-left:4px solid #FFD700;padding:8px 12px;border-radius:0 6px 6px 0;font-size:14px;color:rgba(245,200,66,.95);line-height:1.6;margin-top:8px">⚡ Si juntaras todos los asteroides del cinturón, tendrían menos masa que la Luna.</div>
   </div>
 </div>
 
@@ -322,6 +331,7 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
       <div class="checkpoint-feedback" id="fb-gk2">Selecciona una opción para avanzar.</div>
       <button class="checkpoint-cta" id="btn-gk2" onclick="checkGK('gk2', 'a', '¡Exacto! La terminación &quot;-oide&quot; indica que la roca todavía está flotando libre en el espacio vacío.')" disabled>Comprobar</button>
     </div>
+    <div style="background:rgba(255,215,0,0.12);border-left:4px solid #FFD700;padding:8px 12px;border-radius:0 6px 6px 0;font-size:14px;color:rgba(245,200,66,.95);line-height:1.6;margin-top:8px">🌟 El cinturón de asteroides tiene más de 1 millón de asteroides conocidos.</div>
   </div>
 </div>
 
@@ -665,8 +675,11 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
   <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
     <button class="nav-btn" onclick="goSlide(0)" title="Inicio del módulo" style="padding:6px 10px" aria-label="Inicio del módulo">⏮</button>
     <a href="https://juanmedina1227.github.io/REDA_SistemaSolar_UNL/%C3%8Dndice.html" class="nav-btn" style="padding:6px 12px" title="Volver al Índice grupal" aria-label="Volver al Índice">🏠 ÍNDICE</a>
-    <button class="nav-btn" onclick="document.body.classList.toggle('reading-mode')" title="Modo lectura" style="padding:6px 10px" aria-label="Modo lectura">☀️</button>
+    <button class="nav-btn" onclick="adjustFont(-1)" aria-label="Reducir tamaño de texto" title="Texto más pequeño" style="padding:6px 10px;font-size:.78rem">A−</button>
+    <button class="nav-btn" onclick="adjustFont(1)" aria-label="Aumentar tamaño de texto" title="Texto más grande" style="padding:6px 10px;font-size:.9rem;font-weight:700">A+</button>
+    <button class="nav-btn" id="btn-reading" onclick="toggleReadingMode()" title="Activar modo lectura" style="padding:6px 10px" aria-label="Modo lectura">☀️</button>
     <button class="nav-btn" id="btn-audio" onclick="toggleAudio()" title="Activar sonido ambiente" style="padding:6px 10px" aria-label="Sonido ambiente">🔇</button>
+    <button class="nav-btn" onclick="document.getElementById('docente-modal').style.display='flex'" aria-label="Abrir guía docente" title="Guía Docente" style="padding:6px 10px">📑</button>
     <button class="nav-btn" id="btn-fs" onclick="toggleFS()" title="Pantalla completa" style="padding:6px 10px" aria-label="Pantalla completa">⛶</button>
   </div>
   <button class="nav-btn" id="nav-next" onclick="nextSlide()">SIGUIENTE &#8594;</button>
@@ -865,6 +878,46 @@ document.addEventListener('fullscreenchange',function(){var b=document.getElemen
 (function(){if(!document.fullscreenEnabled){var b=document.getElementById('btn-fs');if(b)b.style.display='none';}})();
 /* SONIDO AMBIENTE */
 (function(){var _c=null,_g=null,_p=false;window.toggleAudio=function(){var btn=document.getElementById('btn-audio');if(!_p){if(!_c){_c=new(window.AudioContext||window.webkitAudioContext)();var osc=_c.createOscillator();osc.type='sine';osc.frequency.value=38;var bl=_c.sampleRate*3,buf=_c.createBuffer(1,bl,_c.sampleRate),d=buf.getChannelData(0);for(var i=0;i<bl;i++)d[i]=(Math.random()*2-1)*.35;var ns=_c.createBufferSource();ns.buffer=buf;ns.loop=true;var fl=_c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=180;_g=_c.createGain();_g.gain.value=0;ns.connect(fl);fl.connect(_g);osc.connect(_g);_g.connect(_c.destination);osc.start();ns.start();}_g.gain.setTargetAtTime(.04,_c.currentTime,.8);_p=true;if(btn){btn.textContent='🔊';btn.title='Desactivar sonido';}try{localStorage.setItem('reda_audio','1');}catch(e){}}else{_g.gain.setTargetAtTime(0,_c.currentTime,.5);_p=false;if(btn){btn.textContent='🔇';btn.title='Activar sonido';}try{localStorage.setItem('reda_audio','0');}catch(e){}}};}());
+/* TAMAÑO DE FUENTE */
+var fontScale=1;
+function adjustFont(dir){fontScale=Math.min(Math.max(fontScale+dir*0.125,0.75),1.5);document.documentElement.style.fontSize=(fontScale*16)+'px';try{localStorage.setItem('reda_fontsize',fontScale);}catch(e){}}
+try{var sf=localStorage.getItem('reda_fontsize');if(sf){fontScale=parseFloat(sf);document.documentElement.style.fontSize=(fontScale*16)+'px';}}catch(e){}
+/* MODO LECTURA */
+var readingMode=false;
+function toggleReadingMode(){readingMode=!readingMode;document.body.classList.toggle('reading-mode',readingMode);var b=document.getElementById('btn-reading');if(b)b.textContent=readingMode?'🌙':'☀️';try{localStorage.setItem('reda_theme',String(readingMode));}catch(e){}}
+try{if(localStorage.getItem('reda_theme')==='true'){readingMode=true;document.body.classList.add('reading-mode');var br=document.getElementById('btn-reading');if(br)br.textContent='🌙';}}catch(e){}
 </script>
+<!-- ═══ MODAL GUÍA DOCENTE T7 ═══ -->
+<div id="docente-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:9999;align-items:flex-start;justify-content:center;overflow-y:auto;padding:20px 0;" onclick="if(event.target===this)this.style.display='none'" role="dialog" aria-modal="true" aria-label="Guía docente T7">
+  <div style="background:#0a1020;border:1px solid rgba(77,166,255,.25);border-radius:10px;max-width:680px;width:95%;padding:32px;margin:auto;position:relative">
+    <h2 style="font-family:var(--fhead);color:var(--gold);font-size:.9rem;letter-spacing:2px;margin-bottom:20px">📋 GUÍA DOCENTE — T7 VECINOS EN EL COSMOS</h2>
+    <div style="display:grid;gap:16px;font-size:.85rem;color:var(--muted);line-height:1.7">
+      <div style="background:rgba(77,166,255,.06);border:1px solid rgba(77,166,255,.2);border-radius:8px;padding:16px">
+        <strong style="color:var(--blue);display:block;margin-bottom:8px">🎯 OBJETIVO DIDÁCTICO</strong>
+        Clasificar correctamente los 4 tipos de cuerpos celestes (asteroides, meteoroides, meteoros, meteoritos) y ubicarlos en el Sistema Solar.
+      </div>
+      <div style="background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.2);border-radius:8px;padding:16px">
+        <strong style="color:var(--gold);display:block;margin-bottom:8px">📚 MODOS DE USO</strong>
+        <ul style="list-style:none;padding:0">
+          <li style="padding:4px 0 4px 16px;position:relative"><span style="position:absolute;left:0;color:var(--gold)">▸</span><strong>Presencial (integrador):</strong> Módulo de cierre. Proyectar y debatir: ¿qué pasaría si un asteroide chocara con la Tierra?</li>
+          <li style="padding:4px 0 4px 16px;position:relative"><span style="position:absolute;left:0;color:var(--gold)">▸</span><strong>Aula invertida:</strong> Repaso grupal tras completar T1–T6. Mapa conceptual colaborativo.</li>
+        </ul>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+        <div style="background:rgba(29,184,122,.06);border:1px solid rgba(29,184,122,.2);border-radius:8px;padding:14px">
+          <strong style="color:var(--teal);display:block;margin-bottom:6px">⏱ TIEMPO</strong>45 minutos
+        </div>
+        <div style="background:rgba(29,184,122,.06);border:1px solid rgba(29,184,122,.2);border-radius:8px;padding:14px">
+          <strong style="color:var(--teal);display:block;margin-bottom:6px">📋 PRERREQUISITOS</strong>T1–T6 completados (visión general del grupo)
+        </div>
+      </div>
+      <div style="background:rgba(245,200,66,.05);border:1px solid rgba(245,200,66,.2);border-radius:8px;padding:16px">
+        <strong style="color:var(--gold);display:block;margin-bottom:8px">✅ CRITERIO DE EVALUACIÓN</strong>
+        El estudiante clasifica correctamente los 4 tipos de cuerpos celestes y los ubica en el Sistema Solar, explicando qué distingue a un meteorito de un meteoroide.
+      </div>
+    </div>
+    <button onclick="document.getElementById('docente-modal').style.display='none'" style="margin-top:20px;background:var(--gold);color:var(--bg);border:none;border-radius:6px;font-family:var(--fhead);font-size:.7rem;letter-spacing:1.5px;padding:10px 24px;cursor:pointer">CERRAR</button>
+  </div>
+</div>
 </body>
 </html>

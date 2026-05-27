@@ -151,6 +151,19 @@ body{font-family:var(--fbody);color:var(--white);display:flex;flex-direction:col
 #nav-next{color:#FFD700!important;border-color:rgba(255,215,0,.45)!important;background:rgba(255,215,0,.08)!important;}
 #nav-next:hover:not(:disabled){background:rgba(255,215,0,.16)!important;border-color:#FFD700!important;}
 .nav-btn{min-height:44px;transition:all .2s,transform .15s;}
+/* ── CARD ANIMATIONS ── */
+@keyframes cardFadeIn{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+.module-card{animation:cardFadeIn .55s ease both;}
+.module-card:nth-child(1){animation-delay:.05s}
+.module-card:nth-child(2){animation-delay:.12s}
+.module-card:nth-child(3){animation-delay:.19s}
+.module-card:nth-child(4){animation-delay:.26s}
+.module-card:nth-child(5){animation-delay:.33s}
+.module-card:nth-child(6){animation-delay:.40s}
+.module-card:nth-child(7){animation-delay:.47s}
+.module-card:nth-child(8){animation-delay:.54s}
+.module-card:hover{transform:scale(1.035) translateY(-4px)!important;border-color:var(--gold)!important;box-shadow:0 0 22px rgba(245,200,66,.35),0 10px 30px rgba(0,0,0,.45)!important;}
+.module-card:hover .module-cta{background:var(--gold)!important;border-color:var(--gold)!important;color:#000!important;}
 </style>
 </head>
 <body>

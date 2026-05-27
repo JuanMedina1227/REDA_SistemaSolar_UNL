@@ -1080,6 +1080,16 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
 @media(max-width:600px){.table-scroll-hint{display:block;}}
 .pchip.sel-chip{border-color:#FFD700!important;border-width:3px!important;background:rgba(255,215,0,.14)!important;color:#FFD700!important;box-shadow:0 0 14px rgba(255,215,0,.45)!important;transform:scale(1.06)!important;}
 @media(max-width:480px){.match-sel{font-size:13px!important;}}
+/* ── FLIP CARDS SÍNTESIS ── */
+.flip-cards-row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin:16px 0;}
+.flip-card{perspective:1000px;width:180px;height:220px;cursor:pointer;flex-shrink:0;}
+.flip-card-inner{transition:transform .6s;transform-style:preserve-3d;position:relative;width:100%;height:100%;}
+.flip-card:hover .flip-card-inner,.flip-card.flipped .flip-card-inner{transform:rotateY(180deg);}
+.flip-card-front,.flip-card-back{position:absolute;width:100%;height:100%;backface-visibility:hidden;border-radius:10px;padding:12px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;}
+.flip-card-front{background:rgba(77,166,255,.1);border:1px solid rgba(77,166,255,.3);}
+.flip-card-back{transform:rotateY(180deg);background:#1a3a5c;color:#fff;font-size:.79rem;line-height:1.7;align-items:flex-start;text-align:left;}
+.flip-hint{font-size:.65rem;color:var(--dim);margin-top:6px;letter-spacing:.5px;}
+@media(max-width:600px){.flip-cards-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}.flip-card{width:100%;height:200px;}}
 </style>
 
 </head>
@@ -1156,6 +1166,7 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
           <button class="premium-cta" onclick="goSlide(1)">
               INICIAR →
           </button>
+          <p style="font-style:italic;color:rgba(245,200,66,0.9);text-align:center;font-size:1rem;margin-top:20px;max-width:640px;line-height:1.6">"Júpiter tiene una tormenta activa desde hace 350 años más grande que la Tierra. Saturno flotaría en el agua si existiera un océano suficientemente grande."</p>
       </div>
 
       <div class="premium-meta">
@@ -1416,6 +1427,7 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
       ⭐ La <strong>Gran Mancha Roja (GMR)</strong> es una tormenta anticiclónica de alta presión, mayor que la Tierra, observable desde el siglo XVII. Su masa equivale a <strong>2× la masa combinada</strong> de todos los demás planetas.
     </div>
     <button class="video-btn" onclick="openVideo('https://www.youtube.com/embed/uj3Lq7Gu94Y?autoplay=1','Júpiter — Sobrevuelo Misión Juno · NASA')" aria-label="Ver video de Júpiter — Misión Juno NASA">VER VIDEO JUNO · NASA</button>
+    <div style="background:rgba(255,215,0,0.12);border-left:4px solid #FFD700;padding:8px 12px;border-radius:0 6px 6px 0;font-size:14px;color:rgba(245,200,66,.95);line-height:1.6;margin-top:8px">⚡ Un día en Júpiter dura solo 10 horas — el planeta con rotación más rápida del Sistema Solar.</div>
     <p class="source-credit" style="margin-top:10px">Imagen: NASA/ESA, Telescopio Espacial Hubble (2014). Dominio público.<br>
     Fuente: <a href="https://science.nasa.gov/jupiter/" target="_blank" rel="noopener">science.nasa.gov/jupiter</a></p>
   </div>
@@ -1448,6 +1460,7 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
       ⭐ Sus <strong>anillos se extienden 282 000 km</strong> pero tienen apenas ~10 m de grosor. Son relativamente jóvenes (100–400 Ma), posiblemente formados por la destrucción de un satélite o cometa. La misión <strong>Cassini-Huygens</strong> (NASA/ESA) los estudió entre 1997 y 2017.
     </div>
     <button class="video-btn" onclick="openVideo('https://www.youtube.com/embed/xrGAQCq9BMU?autoplay=1','Saturno — Cassini Grand Finale · NASA/JPL')" aria-label="Ver video de Saturno — Misión Cassini NASA">VER VIDEO CASSINI · NASA/ESA</button>
+    <div style="background:rgba(255,215,0,0.12);border-left:4px solid #FFD700;padding:8px 12px;border-radius:0 6px 6px 0;font-size:14px;color:rgba(245,200,66,.95);line-height:1.6;margin-top:8px">🌟 Los anillos de Saturno tienen solo 10-30 metros de grosor pero 282 000 km de diámetro.</div>
     <p class="source-credit" style="margin-top:10px">Imagen: NASA/JPL/Space Science Institute – Cassini (2009). Dominio público.<br>
     Fuente: <a href="https://science.nasa.gov/saturn/" target="_blank" rel="noopener">science.nasa.gov/saturn</a></p>
   </div>
@@ -1480,6 +1493,7 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
       ⭐ Urano orbita el Sol prácticamente <strong>acostado de lado</strong>. Sus polos reciben luz solar directa durante <strong>42 años continuos</strong>, seguidos de 42 años de oscuridad — las estaciones más extremas del Sistema Solar. NASA planifica la misión <em>Uranus Orbiter Probe</em> para la década de 2030.
     </div>
     <button class="video-btn" onclick="openVideo('https://www.youtube.com/embed/vkV_gvqeFQ0?autoplay=1','Urano — Tour del gigante helado · NASA Chandra')" aria-label="Ver video de Urano NASA">VER VIDEO URANO · NASA</button>
+    <div style="background:rgba(255,215,0,0.12);border-left:4px solid #FFD700;padding:8px 12px;border-radius:0 6px 6px 0;font-size:14px;color:rgba(245,200,66,.95);line-height:1.6;margin-top:8px">⚡ Urano orbita tumbado de lado — su eje está inclinado 98° respecto a su órbita.</div>
     <p class="source-credit" style="margin-top:10px">Imagen: NASA/JPL-Caltech – Voyager 2 (1986). Dominio público.<br>
     Fuente: <a href="https://science.nasa.gov/uranus/" target="_blank" rel="noopener">science.nasa.gov/uranus</a></p>
   </div>
@@ -1512,6 +1526,7 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
       ⭐ Neptuno recibe <strong>≈ 900× menos energía solar que la Tierra</strong>, pero genera los <strong>vientos más veloces del Sistema Solar</strong> (hasta 2 100 km/h) gracias a su calor interno residual. Para comparar: un huracán categoría 5 en la Tierra apenas alcanza ~280 km/h. ¡Los vientos de Neptuno son 7× más veloces! Voyager 2 es la única nave que lo ha visitado (sobrevuelo: agosto 1989).
     </div>
     <button class="video-btn" onclick="openVideo('https://www.youtube.com/embed/1HBumk5Vm78?autoplay=1','Neptuno — Voyager 2: Primera nave en Neptuno · NASA/JPL')" aria-label="Ver video de Neptuno NASA">VER VIDEO VOYAGER 2 · NASA</button>
+    <div style="background:rgba(255,215,0,0.12);border-left:4px solid #FFD700;padding:8px 12px;border-radius:0 6px 6px 0;font-size:14px;color:rgba(245,200,66,.95);line-height:1.6;margin-top:8px">🌟 Los vientos de Neptuno alcanzan 2 100 km/h — más rápido que el sonido en la Tierra.</div>
     <p class="source-credit" style="margin-top:10px">Imagen: NASA/JPL-Caltech – Voyager 2 (1989). Dominio público.<br>
     Fuente: <a href="https://science.nasa.gov/neptune/" target="_blank" rel="noopener">science.nasa.gov/neptune</a></p>
   </div>
@@ -1557,6 +1572,78 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
       <div style="flex:1;min-width:200px;background:rgba(29,184,122,.05);border:1px solid rgba(29,184,122,.15);border-radius:8px;padding:12px 14px">
         <p style="font-family:var(--fhead);font-size:.62rem;letter-spacing:2px;color:var(--teal);margin-bottom:6px">HELADOS: URANO Y NEPTUNO</p>
         <p style="font-size:.83rem;color:var(--muted)">Más pequeños que los gaseosos pero enormes respecto a los terrestres. El metano les da su color azulado.</p>
+      </div>
+    </div>
+    <!-- FLIP CARDS -->
+    <p style="font-family:var(--fhead);font-size:.62rem;letter-spacing:2px;color:var(--blue);margin:14px 0 8px">TARJETAS INTERACTIVAS — toca para ver detalles</p>
+    <div class="flip-cards-row" role="list">
+      <!-- Júpiter -->
+      <div class="flip-card" role="listitem" aria-label="Tarjeta Júpiter" tabindex="0" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' ')this.classList.toggle('flipped')">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span style="font-size:2rem">🟠</span>
+            <p style="font-family:var(--fhead);font-size:.75rem;letter-spacing:1px;color:var(--blue);margin:6px 0 4px">JÚPITER</p>
+            <p style="font-size:.77rem;color:var(--muted)">2× masa del resto del SS</p>
+            <p class="flip-hint">↩ toca para detalles</p>
+          </div>
+          <div class="flip-card-back">
+            <p>🔹 Tipo: Gaseoso</p>
+            <p>📏 Diámetro: 139 820 km</p>
+            <p>🛰️ Satélites: 95</p>
+            <p>🚀 Misión: Juno (activa)</p>
+          </div>
+        </div>
+      </div>
+      <!-- Saturno -->
+      <div class="flip-card" role="listitem" aria-label="Tarjeta Saturno" tabindex="0" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' ')this.classList.toggle('flipped')">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span style="font-size:2rem">🟡</span>
+            <p style="font-family:var(--fhead);font-size:.75rem;letter-spacing:1px;color:#FFD700;margin:6px 0 4px">SATURNO</p>
+            <p style="font-size:.77rem;color:var(--muted)">Flota en el agua</p>
+            <p class="flip-hint">↩ toca para detalles</p>
+          </div>
+          <div class="flip-card-back">
+            <p>🔹 Tipo: Gaseoso</p>
+            <p>📏 Diámetro: 116 460 km</p>
+            <p>🛰️ Satélites: 146</p>
+            <p>🚀 Misión: Cassini 1997–2017</p>
+          </div>
+        </div>
+      </div>
+      <!-- Urano -->
+      <div class="flip-card" role="listitem" aria-label="Tarjeta Urano" tabindex="0" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' ')this.classList.toggle('flipped')">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span style="font-size:2rem">🔵</span>
+            <p style="font-family:var(--fhead);font-size:.75rem;letter-spacing:1px;color:#4dccff;margin:6px 0 4px">URANO</p>
+            <p style="font-size:.77rem;color:var(--muted)">Eje inclinado 98°</p>
+            <p class="flip-hint">↩ toca para detalles</p>
+          </div>
+          <div class="flip-card-back">
+            <p>🔹 Tipo: Helado</p>
+            <p>📏 Diámetro: 50 724 km</p>
+            <p>🛰️ Satélites: 28</p>
+            <p>🚀 Voyager 2 (1986)</p>
+          </div>
+        </div>
+      </div>
+      <!-- Neptuno -->
+      <div class="flip-card" role="listitem" aria-label="Tarjeta Neptuno" tabindex="0" onclick="this.classList.toggle('flipped')" onkeydown="if(event.key==='Enter'||event.key===' ')this.classList.toggle('flipped')">
+        <div class="flip-card-inner">
+          <div class="flip-card-front">
+            <span style="font-size:2rem">💙</span>
+            <p style="font-family:var(--fhead);font-size:.75rem;letter-spacing:1px;color:#6da4ff;margin:6px 0 4px">NEPTUNO</p>
+            <p style="font-size:.77rem;color:var(--muted)">Vientos 2 100 km/h</p>
+            <p class="flip-hint">↩ toca para detalles</p>
+          </div>
+          <div class="flip-card-back">
+            <p>🔹 Tipo: Helado</p>
+            <p>📏 Diámetro: 49 244 km</p>
+            <p>🛰️ Satélites: 16</p>
+            <p>🚀 Voyager 2 (1989)</p>
+          </div>
+        </div>
       </div>
     </div>
     <p style="font-size:.72rem;color:var(--dim);margin-top:10px">Fuente: NASA Science – Planet sizes and locations (2025). https://science.nasa.gov/solar-system/planets/planet-sizes-and-locations-in-our-solar-system/</p>
@@ -1884,14 +1971,34 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
         <span id="pdf-mobile-tip" style="display:none;font-size:.72rem;color:var(--muted);width:100%;text-align:center;margin-top:4px">📱 En móvil: Menú → Compartir → Imprimir → Guardar como PDF</span>
         <button class="retry-btn" onclick="goSlide(8)" style="border-color:var(--blue);color:var(--blue)" aria-label="Repasar el contenido antes de reintentar">📖 Repasar contenido</button>
         <button class="act-btn" onclick="goSlide(0)" style="margin-top:0" aria-label="Volver al inicio del módulo">🏠 Inicio</button>
-        <button class="act-btn" onclick="goSlide(19)" style="margin-top:0;background:var(--teal);color:#fff;border:none" aria-label="Ver créditos y licencias">Créditos →</button>
+        <button class="act-btn" onclick="goSlide(20)" style="margin-top:0;background:var(--teal);color:#fff;border:none" aria-label="Ver créditos y licencias">Créditos →</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- SLIDE 18: CRÉDITOS / UNE 71362 -->
-<div class="slide" id="s18c" aria-label="Diapositiva 18: Créditos, licencias y conformidad con la Norma UNE 71362">
+<!-- SLIDE 19: DESDE ECUADOR -->
+<div class="slide" id="s19ec">
+  <div class="slide-strip"><span class="strip-label">🇪🇨 Conexión Local</span><span class="strip-dcd">Astronomía desde Ecuador</span></div>
+  <div class="slide-body" style="background:linear-gradient(135deg,#0a2a1a,#0a1a3a)">
+    <div style="text-align:center;margin-bottom:16px">
+      <span style="font-size:3rem">🇪🇨</span>
+      <p class="sec-title" style="justify-content:center;margin-top:8px">Desde Ecuador puedes ver esto</p>
+    </div>
+    <div class="info-card">
+      <p style="font-size:.95rem;line-height:1.8">Júpiter y Saturno son visibles a simple vista desde Loja en noches despejadas, hacia el sur. Con un binocular de 10x puedes ver los anillos de Saturno y las 4 lunas galileanas de Júpiter (Io, Europa, Ganímedes y Calisto). <strong style="color:var(--gold)">Las zonas rurales del cantón como Vilcabamba tienen poca contaminación lumínica — condiciones ideales para observación astronómica.</strong></p>
+    </div>
+    <div style="margin-top:16px;padding:12px 16px;background:rgba(29,184,122,0.1);border:1px solid rgba(29,184,122,0.25);border-radius:var(--r)">
+      <p style="font-size:.88rem;color:var(--teal);line-height:1.6">🔭 <strong>Actividad práctica:</strong> En la próxima noche despejada, busca hacia el sur el punto más brillante que no titila: eso es Júpiter o Saturno. Con binoculares, intenta distinguir las lunas de Júpiter como 4 puntos alineados.</p>
+    </div>
+    <div style="margin-top:12px;padding:10px 14px;background:rgba(245,200,66,0.06);border:1px solid rgba(245,200,66,0.2);border-left:4px solid var(--gold);border-radius:0 6px 6px 0">
+      <p style="font-size:.85rem;line-height:1.6">🌍 <strong style="color:var(--gold)">Dato local:</strong> La Universidad Nacional de Loja (UNL) está a 4° S de latitud. Desde allí, Saturno y Júpiter son visibles por encima del horizonte sur durante gran parte del año.</p>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 20: CRÉDITOS / UNE 71362 -->
+<div class="slide" id="s18c" aria-label="Diapositiva 20: Créditos, licencias y conformidad con la Norma UNE 71362">
   <div class="slide-strip">
     <span class="strip-label">📜 Créditos · Licencias · UNE 71362</span>
     <span class="strip-dcd">Calidad del recurso educativo digital</span>
@@ -2063,7 +2170,7 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
     <div class="nav-info">
       <span class="nav-chapter" id="nav-chapter">PORTADA</span>
       <span style="color:var(--dim)">|</span>
-      <span class="nav-count" id="nav-count">1 / 18</span>
+      <span class="nav-count" id="nav-count">1 / 20</span>
     </div>
   </div>
   <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
@@ -2082,7 +2189,7 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
 
 <script>
 /* ════════════════════ SLIDE ENGINE ════════════════════ */
-const TOTAL = 20;
+const TOTAL = 21;
 let cur = 0;
 const slides = Array.from(document.querySelectorAll('.slide'));
 const CHAPTERS = [
@@ -2090,7 +2197,7 @@ const CHAPTERS = [
   'JÚPITER','SATURNO','URANO','NEPTUNO',
   'SÍNTESIS','REFLEXIÓN','DEBATE','ACTIVIDAD','FASE 1','FASE 2',
   'EVALUACIÓN','EVALUACIÓN','EVALUACIÓN','EVALUACIÓN',
-  'RESULTADO','CRÉDITOS'
+  'RESULTADO','ECUADOR','CRÉDITOS'
 ];
 
 const GATE_BY_SLIDE = {
