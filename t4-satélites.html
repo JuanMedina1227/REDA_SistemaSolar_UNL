@@ -201,6 +201,19 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
 .q-opt.wrong .opt-l{background:var(--coral);color:#fff}
 @media(max-width:700px){.planet-slide{flex-direction:column!important}.planet-img-panel{width:100%!important;height:220px}.quiz-wrap,.act-layout{grid-template-columns:1fr}.slide-body{padding:22px 18px !important}}
 </style>
+<style>
+/* ── MEJORAS GLOBALES REDA ── */
+#nav-prev,#nav-next{min-width:100px;min-height:44px;color:#fff!important;border-color:rgba(77,166,255,.4)!important;background:rgba(77,166,255,.1)!important;}
+#nav-prev:hover:not(:disabled),#nav-next:hover:not(:disabled){background:rgba(77,166,255,.22)!important;border-color:var(--blue)!important;transform:scale(1.04);}
+#nav-next{color:#FFD700!important;border-color:rgba(255,215,0,.45)!important;background:rgba(255,215,0,.08)!important;}
+#nav-next:hover:not(:disabled){background:rgba(255,215,0,.16)!important;border-color:#FFD700!important;}
+.nav-btn{min-height:44px;transition:all .2s,transform .15s;}
+.table-scroll-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.table-scroll-hint{display:none;text-align:center;font-size:.72rem;color:var(--muted);margin-top:5px;}
+@media(max-width:600px){.table-scroll-hint{display:block;}}
+.pchip.sel-chip{border-color:#FFD700!important;border-width:3px!important;background:rgba(255,215,0,.14)!important;color:#FFD700!important;box-shadow:0 0 14px rgba(255,215,0,.45)!important;transform:scale(1.06)!important;}
+@media(max-width:480px){.match-sel{font-size:13px!important;}}
+</style>
 </head>
 <body>
 <a href="#deck" class="skip-link" tabindex="1">Saltar al contenido principal</a>
@@ -273,6 +286,20 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
       <tr><td>Superficie</td><td>Rocosa y llena de cráteres intactos por la falta de atmósfera.</td></tr>
       <tr><td>Efectos</td><td>Su gravedad influye en las mareas terrestres y estabiliza el eje del planeta.</td></tr>
     </table>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0">
+      <div style="background:rgba(77,166,255,.08);border:1px solid rgba(77,166,255,.3);border-radius:8px;padding:10px">
+        <p style="font-family:var(--fhead);font-size:.65rem;color:var(--blue);letter-spacing:1px;margin-bottom:4px">ORIGEN</p>
+        <p style="font-size:.8rem;color:var(--white);line-height:1.4">Teoría del Gran Impacto: hace ~4500&nbsp;Ma, Theia (cuerpo del tamaño de Marte) chocó con la Tierra y los escombros formaron la Luna. <em style="font-size:.7rem;color:var(--muted)">NASA 2024</em></p>
+      </div>
+      <div style="background:rgba(245,200,66,.07);border:1px solid rgba(245,200,66,.28);border-radius:8px;padding:10px">
+        <p style="font-family:var(--fhead);font-size:.65rem;color:var(--gold);letter-spacing:1px;margin-bottom:4px">SUPERFICIE</p>
+        <p style="font-size:.8rem;color:var(--white);line-height:1.4">Sin atmósfera protectora → más de 200&nbsp;km de cráteres de impacto preservados por millones de años. <em style="font-size:.7rem;color:var(--muted)">NASA 2024</em></p>
+      </div>
+      <div style="background:rgba(0,200,150,.07);border:1px solid rgba(0,200,150,.28);border-radius:8px;padding:10px">
+        <p style="font-family:var(--fhead);font-size:.65rem;color:var(--teal);letter-spacing:1px;margin-bottom:4px">EFECTOS</p>
+        <p style="font-size:.8rem;color:var(--white);line-height:1.4">Su gravedad genera las mareas oceánicas y estabiliza la inclinación axial terrestre (~23.5°), condición clave para el clima estable. <em style="font-size:.7rem;color:var(--muted)">NASA 2024</em></p>
+      </div>
+    </div>
 
     <div class="tide-box">
       <h4 style="font-family:var(--fhead); font-size:.7rem; color:var(--blue); margin-bottom:5px;">SIMULADOR DE MAREAS GRAVITACIONALES</h4>
@@ -348,6 +375,20 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
       <tr><td>Superficie</td><td>Corteza de hielo lisa y brillante que se fractura y renueva constantemente. Alta radiación.</td></tr>
       <tr><td>Océano Subterráneo</td><td>Alberga un inmenso océano global de agua salada bajo la corteza de hielo.</td></tr>
     </table>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin:10px 0">
+      <div style="background:rgba(0,200,150,.07);border:1px solid rgba(0,200,150,.28);border-radius:8px;padding:10px">
+        <p style="font-family:var(--fhead);font-size:.65rem;color:var(--teal);letter-spacing:1px;margin-bottom:4px">SUPERFICIE</p>
+        <p style="font-size:.8rem;color:var(--white);line-height:1.4">Corteza de hielo liso con líneas de tectónica (lineae) que evidencian un interior dinámico bajo constante deformación. <em style="font-size:.7rem;color:var(--muted)">NASA 2024</em></p>
+      </div>
+      <div style="background:rgba(77,166,255,.08);border:1px solid rgba(77,166,255,.3);border-radius:8px;padding:10px">
+        <p style="font-family:var(--fhead);font-size:.65rem;color:var(--blue);letter-spacing:1px;margin-bottom:4px">OCÉANO</p>
+        <p style="font-size:.8rem;color:var(--white);line-height:1.4">Océano global de agua salada de 60–150&nbsp;km de profundidad bajo la corteza de hielo; candidato prioritario a vida microbiana. <em style="font-size:.7rem;color:var(--muted)">NASA 2024</em></p>
+      </div>
+      <div style="background:rgba(226,75,74,.07);border:1px solid rgba(226,75,74,.28);border-radius:8px;padding:10px">
+        <p style="font-family:var(--fhead);font-size:.65rem;color:var(--coral);letter-spacing:1px;margin-bottom:4px">CALOR INTERNO</p>
+        <p style="font-size:.8rem;color:var(--white);line-height:1.4">La fricción gravitacional de Júpiter calienta el interior. La misión <em>Europa Clipper</em> (NASA, 2024) investiga su habitabilidad. <em style="font-size:.7rem;color:var(--muted)">NASA 2024</em></p>
+      </div>
+    </div>
 
     <div class="checkpoint-panel" id="panel-gk3">
       <div class="checkpoint-head">
@@ -645,9 +686,12 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
       <span class="nav-count" id="nav-count">1 / 19</span>
     </div>
   </div>
-  <div style="display:flex;gap:5px;">
-    <a href="Índice.html" class="nav-btn" style="padding:6px 12px" title="Volver al Índice">🏠 ÍNDICE</a>
-    <button class="nav-btn" onclick="document.body.classList.toggle('reading-mode')" title="Modo lectura" style="padding:6px 10px">☀️</button>
+  <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
+    <button class="nav-btn" onclick="goSlide(0)" title="Inicio del módulo" style="padding:6px 10px" aria-label="Inicio del módulo">⏮</button>
+    <a href="https://juanmedina1227.github.io/REDA_SistemaSolar_UNL/%C3%8Dndice.html" class="nav-btn" style="padding:6px 12px" title="Volver al Índice grupal" aria-label="Volver al Índice">🏠 ÍNDICE</a>
+    <button class="nav-btn" onclick="document.body.classList.toggle('reading-mode')" title="Modo lectura" style="padding:6px 10px" aria-label="Modo lectura">☀️</button>
+    <button class="nav-btn" id="btn-audio" onclick="toggleAudio()" title="Activar sonido ambiente" style="padding:6px 10px" aria-label="Sonido ambiente">🔇</button>
+    <button class="nav-btn" id="btn-fs" onclick="toggleFS()" title="Pantalla completa" style="padding:6px 10px" aria-label="Pantalla completa">⛶</button>
   </div>
   <button class="nav-btn" id="nav-next" onclick="nextSlide()">SIGUIENTE &#8594;</button>
 </nav>
@@ -835,6 +879,15 @@ function checkReflexion(){
 }
 
 updateNav();
+</script>
+<script src="stars.js"></script>
+<script>
+/* PANTALLA COMPLETA */
+window.toggleFS=function(){if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}else{document.exitFullscreen();}};
+document.addEventListener('fullscreenchange',function(){var b=document.getElementById('btn-fs');if(b)b.textContent=document.fullscreenElement?'✕':'⛶';});
+(function(){if(!document.fullscreenEnabled){var b=document.getElementById('btn-fs');if(b)b.style.display='none';}})();
+/* SONIDO AMBIENTE */
+(function(){var _c=null,_g=null,_p=false;window.toggleAudio=function(){var btn=document.getElementById('btn-audio');if(!_p){if(!_c){_c=new(window.AudioContext||window.webkitAudioContext)();var osc=_c.createOscillator();osc.type='sine';osc.frequency.value=38;var bl=_c.sampleRate*3,buf=_c.createBuffer(1,bl,_c.sampleRate),d=buf.getChannelData(0);for(var i=0;i<bl;i++)d[i]=(Math.random()*2-1)*.35;var ns=_c.createBufferSource();ns.buffer=buf;ns.loop=true;var fl=_c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=180;_g=_c.createGain();_g.gain.value=0;ns.connect(fl);fl.connect(_g);osc.connect(_g);_g.connect(_c.destination);osc.start();ns.start();}_g.gain.setTargetAtTime(.04,_c.currentTime,.8);_p=true;if(btn){btn.textContent='🔊';btn.title='Desactivar sonido';}try{localStorage.setItem('reda_audio','1');}catch(e){}}else{_g.gain.setTargetAtTime(0,_c.currentTime,.5);_p=false;if(btn){btn.textContent='🔇';btn.title='Activar sonido';}try{localStorage.setItem('reda_audio','0');}catch(e){}}};}());
 </script>
 </body>
 </html>

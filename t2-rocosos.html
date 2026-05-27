@@ -193,6 +193,18 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
 .q-opt.wrong .opt-l{background:var(--coral);color:#fff}
 @media(max-width:700px){.planet-slide{flex-direction:column!important}.planet-img-panel{width:100%!important;height:220px}.quiz-wrap,.act-layout{grid-template-columns:1fr}.slide-body{padding:22px 18px !important}}
 </style>
+<style>
+/* ── MEJORAS GLOBALES REDA ── */
+#nav-prev,#nav-next{min-width:100px;min-height:44px;color:#fff!important;border-color:rgba(77,166,255,.4)!important;background:rgba(77,166,255,.1)!important;}
+#nav-prev:hover:not(:disabled),#nav-next:hover:not(:disabled){background:rgba(77,166,255,.22)!important;border-color:var(--blue)!important;transform:scale(1.04);}
+#nav-next{color:#FFD700!important;border-color:rgba(255,215,0,.45)!important;background:rgba(255,215,0,.08)!important;}
+#nav-next:hover:not(:disabled){background:rgba(255,215,0,.16)!important;border-color:#FFD700!important;}
+.nav-btn{min-height:44px;transition:all .2s,transform .15s;}
+.table-scroll-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.table-scroll-hint{display:none;text-align:center;font-size:.72rem;color:var(--muted);margin-top:5px;}
+@media(max-width:600px){.table-scroll-hint{display:block;}}
+.pchip.sel-chip{border-color:#FFD700!important;border-width:3px!important;background:rgba(255,215,0,.14)!important;color:#FFD700!important;box-shadow:0 0 14px rgba(255,215,0,.45)!important;transform:scale(1.06)!important;}
+</style>
 </head>
 <body>
 <a href="#deck" class="skip-link" tabindex="1">Saltar al contenido principal</a>
@@ -661,9 +673,12 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
       <span class="nav-count" id="nav-count">1 / 19</span>
     </div>
   </div>
-  <div style="display:flex;gap:5px;">
-    <a href="Índice.html" class="nav-btn" style="padding:6px 12px" title="Volver al Índice">🏠 ÍNDICE</a>
-    <button class="nav-btn" onclick="document.body.classList.toggle('reading-mode')" title="Modo lectura" style="padding:6px 10px">☀️</button>
+  <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap;">
+    <button class="nav-btn" onclick="goSlide(0)" title="Inicio del módulo" style="padding:6px 10px" aria-label="Inicio del módulo">⏮</button>
+    <a href="https://juanmedina1227.github.io/REDA_SistemaSolar_UNL/%C3%8Dndice.html" class="nav-btn" style="padding:6px 12px" title="Volver al Índice grupal" aria-label="Volver al Índice">🏠 ÍNDICE</a>
+    <button class="nav-btn" onclick="document.body.classList.toggle('reading-mode')" title="Modo lectura" style="padding:6px 10px" aria-label="Modo lectura">☀️</button>
+    <button class="nav-btn" id="btn-audio" onclick="toggleAudio()" title="Activar sonido ambiente" style="padding:6px 10px" aria-label="Sonido ambiente">🔇</button>
+    <button class="nav-btn" id="btn-fs" onclick="toggleFS()" title="Pantalla completa" style="padding:6px 10px" aria-label="Pantalla completa">⛶</button>
   </div>
   <button class="nav-btn" id="nav-next" onclick="nextSlide()">SIGUIENTE &#8594;</button>
 </nav>
@@ -844,6 +859,15 @@ function checkReflexion(){
 }
 
 updateNav();
+</script>
+<script src="stars.js"></script>
+<script>
+/* PANTALLA COMPLETA */
+window.toggleFS=function(){if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}else{document.exitFullscreen();}};
+document.addEventListener('fullscreenchange',function(){var b=document.getElementById('btn-fs');if(b)b.textContent=document.fullscreenElement?'✕':'⛶';});
+(function(){if(!document.fullscreenEnabled){var b=document.getElementById('btn-fs');if(b)b.style.display='none';}})();
+/* SONIDO AMBIENTE */
+(function(){var _c=null,_g=null,_p=false;window.toggleAudio=function(){var btn=document.getElementById('btn-audio');if(!_p){if(!_c){_c=new(window.AudioContext||window.webkitAudioContext)();var osc=_c.createOscillator();osc.type='sine';osc.frequency.value=38;var bl=_c.sampleRate*3,buf=_c.createBuffer(1,bl,_c.sampleRate),d=buf.getChannelData(0);for(var i=0;i<bl;i++)d[i]=(Math.random()*2-1)*.35;var ns=_c.createBufferSource();ns.buffer=buf;ns.loop=true;var fl=_c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=180;_g=_c.createGain();_g.gain.value=0;ns.connect(fl);fl.connect(_g);osc.connect(_g);_g.connect(_c.destination);osc.start();ns.start();}_g.gain.setTargetAtTime(.04,_c.currentTime,.8);_p=true;if(btn){btn.textContent='🔊';btn.title='Desactivar sonido';}try{localStorage.setItem('reda_audio','1');}catch(e){}}else{_g.gain.setTargetAtTime(0,_c.currentTime,.5);_p=false;if(btn){btn.textContent='🔇';btn.title='Activar sonido';}try{localStorage.setItem('reda_audio','0');}catch(e){}}};}());
 </script>
 </body>
 </html>

@@ -148,6 +148,15 @@ body{font-family:var(--fbody);color:var(--white);display:flex;flex-direction:col
   .instr-grid{grid-template-columns:1fr}
   .score-breakdown{grid-template-columns:1fr 1fr}
 }
+/* ── MEJORAS GLOBALES REDA ── */
+#nav-prev,#nav-next{min-width:100px;min-height:44px;color:#fff!important;border-color:rgba(77,166,255,.4)!important;background:rgba(77,166,255,.1)!important;}
+#nav-prev:hover:not(:disabled),#nav-next:hover:not(:disabled){background:rgba(77,166,255,.22)!important;border-color:var(--blue)!important;transform:scale(1.04);}
+#nav-next{color:#FFD700!important;border-color:rgba(255,215,0,.45)!important;background:rgba(255,215,0,.08)!important;}
+#nav-next:hover:not(:disabled){background:rgba(255,215,0,.16)!important;border-color:#FFD700!important;}
+.nav-btn{min-height:44px;transition:all .2s,transform .15s;}
+.table-scroll-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.table-scroll-hint{display:none;text-align:center;font-size:.72rem;color:var(--muted);margin-top:5px;}
+@media(max-width:600px){.table-scroll-hint{display:block;}}
 </style>
 </head>
 <body>
@@ -408,7 +417,12 @@ body{font-family:var(--fbody);color:var(--white);display:flex;flex-direction:col
 </div><!-- /deck -->
 
 <nav id="nav" role="navigation">
-  <a href="Índice.html" class="nav-btn" title="Volver al Índice" style="padding:6px 12px">🏠 ÍNDICE</a>
+  <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+    <button class="nav-btn" onclick="goSlide(0)" title="Inicio del módulo" style="padding:6px 10px" aria-label="Inicio del módulo">⏮</button>
+    <a href="https://juanmedina1227.github.io/REDA_SistemaSolar_UNL/%C3%8Dndice.html" class="nav-btn" style="padding:6px 12px" title="Volver al Índice" aria-label="Volver al Índice">🏠 ÍNDICE</a>
+    <button class="nav-btn" id="btn-audio" onclick="toggleAudio()" title="Activar sonido ambiente" style="padding:6px 10px" aria-label="Sonido ambiente">🔇</button>
+    <button class="nav-btn" id="btn-fs" onclick="toggleFS()" title="Pantalla completa" style="padding:6px 10px" aria-label="Pantalla completa">⛶</button>
+  </div>
   <div class="nav-center">
     <div class="nav-progress"><div class="nav-bar-fill" id="nav-fill" style="width:8%"></div></div>
     <div class="nav-info">
@@ -526,6 +540,15 @@ function retryQuiz(){
 }
 
 updateNav();
+</script>
+<script src="stars.js"></script>
+<script>
+/* Fullscreen */
+window.toggleFS=function(){if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}else{document.exitFullscreen();}};
+document.addEventListener('fullscreenchange',function(){var b=document.getElementById('btn-fs');if(b)b.textContent=document.fullscreenElement?'✕':'⛶';});
+(function(){if(!document.fullscreenEnabled){var b=document.getElementById('btn-fs');if(b)b.style.display='none';}})();
+/* Web Audio API ambient sound - starts muted */
+(function(){var _c=null,_g=null,_p=false;window.toggleAudio=function(){var btn=document.getElementById('btn-audio');if(!_p){if(!_c){_c=new(window.AudioContext||window.webkitAudioContext)();var osc=_c.createOscillator();osc.type='sine';osc.frequency.value=38;var bl=_c.sampleRate*3,buf=_c.createBuffer(1,bl,_c.sampleRate),d=buf.getChannelData(0);for(var i=0;i<bl;i++)d[i]=(Math.random()*2-1)*.35;var ns=_c.createBufferSource();ns.buffer=buf;ns.loop=true;var fl=_c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=180;_g=_c.createGain();_g.gain.value=0;ns.connect(fl);fl.connect(_g);osc.connect(_g);_g.connect(_c.destination);osc.start();ns.start();}_g.gain.setTargetAtTime(.04,_c.currentTime,.8);_p=true;if(btn){btn.textContent='🔊';btn.title='Desactivar sonido';}try{localStorage.setItem('reda_audio','1');}catch(e){}}else{_g.gain.setTargetAtTime(0,_c.currentTime,.5);_p=false;if(btn){btn.textContent='🔇';btn.title='Activar sonido';}try{localStorage.setItem('reda_audio','0');}catch(e){}}};}());
 </script>
 </body>
 </html>

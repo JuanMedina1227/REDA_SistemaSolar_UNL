@@ -1067,6 +1067,20 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
   .checkpoint-sub{font-size:.8rem}
 }
 </style>
+<style>
+/* ── MEJORAS GLOBALES REDA ── */
+#nav-prev,#nav-next{min-width:100px;min-height:44px;color:#fff!important;border-color:rgba(77,166,255,.4)!important;background:rgba(77,166,255,.1)!important;}
+#nav-prev:hover:not(:disabled),#nav-next:hover:not(:disabled){background:rgba(77,166,255,.22)!important;border-color:var(--blue)!important;transform:scale(1.04);}
+#nav-next{color:#FFD700!important;border-color:rgba(255,215,0,.45)!important;background:rgba(255,215,0,.08)!important;}
+#nav-next:hover:not(:disabled){background:rgba(255,215,0,.16)!important;border-color:#FFD700!important;}
+#nav-next.locked{color:#ffb2b2!important;border-color:rgba(226,75,74,.6)!important;background:rgba(226,75,74,.12)!important;}
+.nav-btn{min-height:44px;transition:all .2s,transform .15s;}
+.table-scroll-wrapper{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+.table-scroll-hint{display:none;text-align:center;font-size:.72rem;color:var(--muted);margin-top:5px;}
+@media(max-width:600px){.table-scroll-hint{display:block;}}
+.pchip.sel-chip{border-color:#FFD700!important;border-width:3px!important;background:rgba(255,215,0,.14)!important;color:#FFD700!important;box-shadow:0 0 14px rgba(255,215,0,.45)!important;transform:scale(1.06)!important;}
+@media(max-width:480px){.match-sel{font-size:13px!important;}}
+</style>
 
 </head>
 <body>
@@ -1866,7 +1880,9 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
       <div class="score-badge" id="score-badge"></div>
       <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:8px">
         <button class="retry-btn" onclick="retryQuiz()" aria-label="Reintentar la evaluación">↺ Reintentar</button>
-        <button class="retry-btn print-btn" onclick="window.print()" aria-label="Guardar reporte en PDF" style="border-color:var(--teal);color:var(--teal)">📥 Guardar PDF</button>
+        <button class="retry-btn print-btn" onclick="window.print()" aria-label="Guardar reporte en PDF" style="border-color:var(--teal);color:var(--teal)" id="btn-pdf-t3">📥 Guardar PDF</button>
+        <span id="pdf-mobile-tip" style="display:none;font-size:.72rem;color:var(--muted);width:100%;text-align:center;margin-top:4px">📱 En móvil: Menú → Compartir → Imprimir → Guardar como PDF</span>
+        <button class="retry-btn" onclick="goSlide(8)" style="border-color:var(--blue);color:var(--blue)" aria-label="Repasar el contenido antes de reintentar">📖 Repasar contenido</button>
         <button class="act-btn" onclick="goSlide(0)" style="margin-top:0" aria-label="Volver al inicio del módulo">🏠 Inicio</button>
         <button class="act-btn" onclick="goSlide(19)" style="margin-top:0;background:var(--teal);color:#fff;border:none" aria-label="Ver créditos y licencias">Créditos →</button>
       </div>
@@ -2051,12 +2067,15 @@ body.reading-mode .planet-img-panel img{filter:invert(1) hue-rotate(180deg)}
     </div>
   </div>
   <div style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+    <button class="nav-btn" onclick="goSlide(0)" title="Inicio del módulo" style="padding:6px 10px" aria-label="Inicio del módulo">⏮</button>
     <button class="nav-btn" onclick="adjustFont(-1)" aria-label="Reducir tamaño de texto" title="Texto más pequeño" style="padding:6px 10px;font-size:.78rem">A−</button>
     <button class="nav-btn" onclick="adjustFont(1)" aria-label="Aumentar tamaño de texto" title="Texto más grande" style="padding:6px 10px;font-size:.9rem;font-weight:700">A+</button>
     <button class="nav-btn" id="btn-reading" onclick="toggleReadingMode()" aria-label="Activar modo lectura (fondo claro)" title="Modo lectura" style="padding:6px 10px">☀️</button>
+    <button class="nav-btn" id="btn-audio" onclick="toggleAudio()" title="Activar sonido ambiente" style="padding:6px 10px" aria-label="Sonido ambiente">🔇</button>
     <button class="nav-btn" onclick="document.getElementById('index-modal').style.display='flex'" aria-label="Abrir índice del módulo" title="Índice" style="padding:6px 10px">📑</button>
     <button class="nav-btn" onclick="document.getElementById('help-modal').style.display='flex'" aria-label="Abrir ayuda técnica" title="Ayuda" style="padding:6px 10px">❓</button>
-    <a href="Índice.html" class="nav-btn" aria-label="Volver al Índice" title="Volver al Índice" style="padding:6px 12px">🏠 ÍNDICE</a>
+    <a href="https://juanmedina1227.github.io/REDA_SistemaSolar_UNL/%C3%8Dndice.html" class="nav-btn" aria-label="Volver al Índice grupal" title="Volver al Índice" style="padding:6px 12px">🏠 ÍNDICE</a>
+    <button class="nav-btn" id="btn-fs" onclick="toggleFS()" title="Pantalla completa" style="padding:6px 10px" aria-label="Pantalla completa">⛶</button>
   </div>
   <button class="nav-btn" id="nav-next" onclick="nextSlide()" aria-label="Diapositiva siguiente">SIGUIENTE &#8594;</button>
 </nav>
@@ -2716,6 +2735,17 @@ document.addEventListener('DOMContentLoaded', () => {
     chips.forEach(chip => chipContainer.appendChild(chip));
   }
 });
+</script>
+<script src="stars.js"></script>
+<script>
+/* PDF mobile tooltip */
+(function(){if(navigator.maxTouchPoints>0){var t=document.getElementById('pdf-mobile-tip');if(t)t.style.display='block';}})();
+/* Fullscreen */
+window.toggleFS=function(){if(!document.fullscreenElement){document.documentElement.requestFullscreen().catch(function(){});}else{document.exitFullscreen();}};
+document.addEventListener('fullscreenchange',function(){var b=document.getElementById('btn-fs');if(b)b.textContent=document.fullscreenElement?'✕':'⛶';});
+(function(){if(!document.fullscreenEnabled){var b=document.getElementById('btn-fs');if(b)b.style.display='none';}})();
+/* Web Audio API ambient sound - starts muted */
+(function(){var _c=null,_g=null,_p=false;window.toggleAudio=function(){var btn=document.getElementById('btn-audio');if(!_p){if(!_c){_c=new(window.AudioContext||window.webkitAudioContext)();var osc=_c.createOscillator();osc.type='sine';osc.frequency.value=38;var bl=_c.sampleRate*3,buf=_c.createBuffer(1,bl,_c.sampleRate),d=buf.getChannelData(0);for(var i=0;i<bl;i++)d[i]=(Math.random()*2-1)*.35;var ns=_c.createBufferSource();ns.buffer=buf;ns.loop=true;var fl=_c.createBiquadFilter();fl.type='lowpass';fl.frequency.value=180;_g=_c.createGain();_g.gain.value=0;ns.connect(fl);fl.connect(_g);osc.connect(_g);_g.connect(_c.destination);osc.start();ns.start();}_g.gain.setTargetAtTime(.04,_c.currentTime,.8);_p=true;if(btn){btn.textContent='🔊';btn.title='Desactivar sonido';}try{localStorage.setItem('reda_audio','1');}catch(e){}}else{_g.gain.setTargetAtTime(0,_c.currentTime,.5);_p=false;if(btn){btn.textContent='🔇';btn.title='Activar sonido';}try{localStorage.setItem('reda_audio','0');}catch(e){}}};}());
 </script>
 </body>
 </html>
