@@ -76,4 +76,15 @@
   } else {
     initStars();
   }
+
+  /* Navegación por teclado — funciona en todos los módulos */
+  document.addEventListener('keydown', function (e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' ||
+        e.target.isContentEditable) return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+      if (typeof nextSlide === 'function') nextSlide();
+    } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+      if (typeof prevSlide === 'function') prevSlide();
+    }
+  });
 })();

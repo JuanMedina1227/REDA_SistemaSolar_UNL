@@ -2365,11 +2365,6 @@ function updateNav() {
   fill.parentElement.setAttribute('aria-valuenow', pct);
 }
 
-document.addEventListener('keydown', e => {
-  if (e.key === 'ArrowRight' || e.key === 'ArrowDown') nextSlide();
-  if (e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   prevSlide();
-});
-
 renderPlanetCheckpoints();
 updateNav();
 
