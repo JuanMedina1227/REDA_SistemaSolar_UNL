@@ -321,7 +321,7 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
 
 <div class="slide planet-slide" id="s4c">
   <div class="planet-img-panel">
-    <img src="https://starwalk.space/gallery/images/comet-structure/es/1920x1080.jpg" alt="Estructura de un cometa" loading="lazy">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Comet_McNaught.jpg/1024px-Comet_McNaught.jpg" alt="Estructura de un cometa" loading="lazy">
     <div class="p-gradient" style="background:linear-gradient(to right, transparent 55%, rgba(10,16,32,1) 100%), linear-gradient(to bottom, rgba(6,11,24,.3) 0%, transparent 30%, transparent 70%, rgba(6,11,24,.5) 100%)"></div>
     <span class="planet-type-over badge-ice">ESTRUCTURA</span>
     <h2 class="planet-name-over" style="color:var(--white)">ANATOMÍA</h2>
@@ -354,7 +354,7 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
 
 <div class="slide planet-slide" id="s5c">
   <div class="planet-img-panel">
-    <img src="https://josevicentediaz.com/wp-content/uploads/2014/09/captura70.jpg?w=1024" alt="Sublimación" loading="lazy">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c5/Comet_67P_on_19_September_2014_NavCam_mosaic.jpg/1024px-Comet_67P_on_19_September_2014_NavCam_mosaic.jpg" alt="Sublimación" loading="lazy">
     <div class="p-gradient" style="background:linear-gradient(to right, transparent 55%, rgba(10,16,32,1) 100%), linear-gradient(to bottom, rgba(6,11,24,.3) 0%, transparent 30%, transparent 70%, rgba(6,11,24,.5) 100%)"></div>
     <span class="planet-type-over badge-gas" style="border-color:var(--coral);color:var(--coral);background:rgba(226,75,74,.15)">PROCESO FÍSICO</span>
     <h2 class="planet-name-over" style="color:var(--coral)">SUBLIMACIÓN</h2>
@@ -601,7 +601,7 @@ body.reading-mode img{filter:invert(1) hue-rotate(180deg)}
 
 <div class="slide" id="s14c" data-answer="b">
   <div class="slide-strip"><span class="strip-label">📝 Evaluación · Pregunta 1 DE 4</span></div>
-  <div class="slide-body"><div class="quiz-wrap"><div class="quiz-img-panel"><img src="https://starwalk.space/gallery/images/comet-structure/es/1920x1080.jpg"></div><div class="quiz-right">
+  <div class="slide-body"><div class="quiz-wrap"><div class="quiz-img-panel"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e1/Comet_McNaught.jpg/1024px-Comet_McNaught.jpg"></div><div class="quiz-right">
     <p class="q-text">¿Cuál es el componente principal del núcleo de un cometa?</p>
     <div class="q-opts">
       <div class="q-opt" onclick="qSelect('q1','a',this)"><span class="opt-l">A</span>Hierro y níquel.</div>
@@ -778,9 +778,17 @@ function updateNav() {
   const locked = isSlideLocked(cur);
   document.getElementById('nav-prev').disabled = cur === 0;
   const nextBtn = document.getElementById('nav-next');
-  nextBtn.disabled = cur === TOTAL - 1 || locked;
-  nextBtn.classList.toggle('locked', locked);
-  nextBtn.textContent = locked ? 'COMPLETA EL RETO' : 'SIGUIENTE →';
+  if (cur === TOTAL - 1 && !locked) {
+    nextBtn.disabled = false;
+    nextBtn.classList.remove('locked');
+    nextBtn.textContent = 'T6: SAT. ARTIFICIALES →';
+    nextBtn.onclick = () => { window.location.href = 't6-satelites-art.html'; };
+  } else {
+    nextBtn.disabled = cur === TOTAL - 1 || locked;
+    nextBtn.classList.toggle('locked', locked);
+    nextBtn.textContent = locked ? 'COMPLETA EL RETO' : 'SIGUIENTE →';
+    nextBtn.onclick = nextSlide;
+  }
   document.getElementById('nav-count').textContent = `${cur+1} / ${TOTAL}`;
   document.getElementById('nav-chapter').textContent = CHAPTERS[cur];
   document.getElementById('nav-fill').style.width = ((cur+1)/TOTAL*100) + '%';

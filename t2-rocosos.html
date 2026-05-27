@@ -763,9 +763,17 @@ function updateNav() {
   const locked = isSlideLocked(cur);
   document.getElementById('nav-prev').disabled = cur === 0;
   const nextBtn = document.getElementById('nav-next');
-  nextBtn.disabled = cur === TOTAL - 1 || locked;
-  nextBtn.classList.toggle('locked', locked);
-  nextBtn.textContent = locked ? 'COMPLETA EL RETO' : 'SIGUIENTE →';
+  if (cur === TOTAL - 1 && !locked) {
+    nextBtn.disabled = false;
+    nextBtn.classList.remove('locked');
+    nextBtn.textContent = 'T3: GIGANTES GASEOSOS →';
+    nextBtn.onclick = () => { window.location.href = 't3-gigantes.html'; };
+  } else {
+    nextBtn.disabled = cur === TOTAL - 1 || locked;
+    nextBtn.classList.toggle('locked', locked);
+    nextBtn.textContent = locked ? 'COMPLETA EL RETO' : 'SIGUIENTE →';
+    nextBtn.onclick = nextSlide;
+  }
   document.getElementById('nav-count').textContent = `${cur+1} / ${TOTAL}`;
   document.getElementById('nav-chapter').textContent = CHAPTERS[cur];
   document.getElementById('nav-fill').style.width = ((cur+1)/TOTAL*100) + '%';

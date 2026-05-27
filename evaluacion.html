@@ -480,7 +480,14 @@ function updateNav(){
      navigation is handled by the q-next button inside each question. */
   const isQuestionSlide = cur >= 2 && cur <= 11;
   nextBtn.style.display = isQuestionSlide ? 'none' : 'flex';
-  if(cur === TOTAL-1) nextBtn.style.display = 'none';
+  if(cur === TOTAL-1) {
+    nextBtn.style.display = 'flex';
+    nextBtn.textContent = 'VOLVER AL INICIO →';
+    nextBtn.onclick = () => { window.location.href = 'Índice.html'; };
+  } else {
+    nextBtn.onclick = nextSlide;
+    nextBtn.textContent = 'SIGUIENTE →';
+  }
 
   document.getElementById('nav-count').textContent = `${cur+1} / ${TOTAL}`;
   document.getElementById('nav-chapter').textContent = CHAPTERS[cur];

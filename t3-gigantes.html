@@ -2346,15 +2346,23 @@ function updateNav() {
   const locked = isSlideAdvanceLocked(cur);
 
   prevBtn.disabled = cur === 0;
-  nextBtn.disabled = cur === TOTAL - 1 || locked;
-  nextBtn.classList.toggle('locked', locked);
-
-  if (locked) {
-    nextBtn.textContent = 'COMPLETA EL RETO';
-    nextBtn.setAttribute('aria-label', 'Completa el reto para avanzar');
+  if (cur === TOTAL - 1 && !locked) {
+    nextBtn.disabled = false;
+    nextBtn.classList.remove('locked');
+    nextBtn.textContent = 'T4: SATÉLITES →';
+    nextBtn.setAttribute('aria-label', 'Ir al Módulo T4: Satélites Naturales');
+    nextBtn.onclick = () => { window.location.href = 't4-satélites.html'; };
   } else {
-    nextBtn.textContent = 'SIGUIENTE →';
-    nextBtn.setAttribute('aria-label', 'Diapositiva siguiente');
+    nextBtn.disabled = cur === TOTAL - 1 || locked;
+    nextBtn.classList.toggle('locked', locked);
+    nextBtn.onclick = nextSlide;
+    if (locked) {
+      nextBtn.textContent = 'COMPLETA EL RETO';
+      nextBtn.setAttribute('aria-label', 'Completa el reto para avanzar');
+    } else {
+      nextBtn.textContent = 'SIGUIENTE →';
+      nextBtn.setAttribute('aria-label', 'Diapositiva siguiente');
+    }
   }
 
   document.getElementById('nav-count').textContent = (cur + 1) + ' / ' + TOTAL;
